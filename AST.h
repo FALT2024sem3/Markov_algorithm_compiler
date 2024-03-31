@@ -1,11 +1,12 @@
+#ifndef AST_H
+#define AST_H
+
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <list>
-#include <memory>
-#pragma once
+
 
 namespace ParseTree
 {
@@ -76,3 +77,5 @@ public:
     inline static Block Root;    
 };
 } // namespace ParseTree
+
+#endif

@@ -9,7 +9,6 @@
 #include <fstream>
 #include <vector>
 #include "AST.h"
-#pragma once
 
 
 #include "Scanner.h"

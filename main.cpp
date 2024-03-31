@@ -6,21 +6,18 @@
 #include <string>
 #include <vector>
 
- 
-using namespace std;
-
-void TreeGo(const std::vector<ParseTree::Stat*>& st){
-        wcout<<st.size()<<endl;
+void TreeTraversal(const std::vector<ParseTree::Stat*>& st){
+        std::wcout<<st.size()<<std::endl;
         for (size_t i = 0; i < st.size(); i++)
         {
-                cout<<"IN"<<endl;
+                std::cout<<"IN"<<std::endl;
                 if (*(st[i]->Type) == ParseTree::NodeType::BinExpr){
-                        wcout<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetLeftExpr()<<' '<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetRightExpr()<<endl; 
+                        std::wcout<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetLeftExpr()<<' '<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetRightExpr()<<std::endl; 
                 }
                 if (*(st[i]->Type) == ParseTree::NodeType::Block){
-                        cout<<"a"<<endl;
+                        std::cout<<"a"<<std::endl;
                         // ParseTree::Block*  v = dynamic_cast<ParseTree::Block*>(st[i]);
-                        TreeGo(dynamic_cast<ParseTree::Block*>(st[i])->Getstats());
+                        TreeTraversal(dynamic_cast<ParseTree::Block*>(st[i])->Getstats());
                 }
         }
         
@@ -28,7 +25,6 @@ void TreeGo(const std::vector<ParseTree::Stat*>& st){
  
 main(int argc, char *argv[])
 {
-        try{
         if (argc == 2)
         {
                 
@@ -38,20 +34,12 @@ main(int argc, char *argv[])
                 Parser *parser   = new Parser(scanner);
                 parser->Parse();
 
-                // for (size_t i = 0; i < Parser::SintaxTree::terms.size(); i++)
-                // {
-                //         if (*(dynamic_cast<Parser::Binexpr*>(Parser::SintaxTree::terms[i]))->type == Parser::NodeType::binExpr)
-                //                 wcout<<*(dynamic_cast<Parser::Binexpr*>(Parser::SintaxTree::terms[i]))->left<<L" "<<*(dynamic_cast<Parser::Binexpr*>(Parser::SintaxTree::terms[i]))->right<<endl;
-                //         // wcout<<(dynamic_cast<Parser::term*>(Parser::SyntaxTree::children_of_root[i]))->right;
+                // if (*(ParseTree::AST::Root.Type) == ParseTree::NodeType::Block)
+                //         cout<<"YAPPI"<<endl;
+                // if (*(ParseTree::AST::Root.Getstats()[0]->Type) == ParseTree::NodeType::BinExpr){
                 // }
 
-                if (*(ParseTree::AST::Root.Type) == ParseTree::NodeType::Block)
-                        cout<<"YAPPI"<<endl;
-                if (*(ParseTree::AST::Root.Getstats()[0]->Type) == ParseTree::NodeType::BinExpr){
-                        // cout<<"AAAAAA"<<endl;
-                }
-                // cout<<ParseTree::AST::Root.Getstats().size();
-                TreeGo(ParseTree::AST::Root.Getstats());
+                TreeTraversal(ParseTree::AST::Root.Getstats());
  
                 delete parser;
                 delete scanner;
@@ -63,10 +51,7 @@ main(int argc, char *argv[])
         
         else
         {
-                cout << "Use: translator filename" << endl;
+                std::cout << "Use: translator filename" << std::endl;
                 return 1;
-        }}
-        catch(...){
-                cout<<"qwe"<<endl;
         }
 }

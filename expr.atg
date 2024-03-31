@@ -1,0 +1,69 @@
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <list>
+#include <memory>
+ 
+COMPILER Root
+
+enum Operator{ SUB };
+enum NodeType{ StringValueLiteral };
+
+class Node{};
+
+class BinExpr : public Node{
+  public:
+    Operator* op;
+    std::wstring* left;
+    std::wstring* right;
+    
+    BinExpr(std::wstring* f1, Operator* o, std::wstring* f2) { op = o; left = f1; right = f2; }
+};
+
+class SintaxTree{
+    public:
+    inline static std::vector<BinExpr*> terms;
+};
+
+IGNORECASE
+CHARACTERS
+
+leter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".
+digit = "0123456789".
+verbatimStringChar = ANY - '"' - "<" - ">".
+cr  = '\r'.
+lf  = '\n'.
+tab = '\t'.
+ 
+TOKENS
+
+ident = leter {leter | digit | "_"}.
+string = "\"" {verbatimStringChar} "\"".
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO lf
+ 
+IGNORE cr + lf + tab
+ 
+PRODUCTIONS
+ 
+  Root = "prog"   Block .
+
+  Block  =  "{" {Stat} "}"
+            (. 
+            std::cout<<"Block"<<std::endl;
+            .).
+
+
+  Stat =  (Block  
+          |  Term) (..).
+  
+  Term =  Word "->" Word ";"
+          (. 
+           std::cout<<"BinExpr"<<std::endl; 
+          .).
+  
+  Word = string.
+END Root.  

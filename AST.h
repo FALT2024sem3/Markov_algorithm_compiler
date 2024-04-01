@@ -68,7 +68,7 @@ class Block : public Stat {
     std::vector<Stat*>* stats;
 public:
     std::vector<Stat*> Getstats(){ return *stats; }
-    Block(){ this->Type = new NodeType(NodeType::Block); stats = new std::vector<Stat*>; std::cout<<"constbl"<<std::endl;}
+    Block(){ this->Type = new NodeType(NodeType::Block); stats = new std::vector<Stat*>;}
     void add (Stat* s) { stats->push_back(s); }
 };
 

@@ -8,18 +8,20 @@
 
 void TreeTraversal(const std::vector<ParseTree::Stat*>& st){
         std::wcout<<st.size()<<std::endl;
+        std::wcout<<"{"<<std::endl;
         for (size_t i = 0; i < st.size(); i++)
         {
-                std::cout<<"IN"<<std::endl;
+                // std::cout<<"IN"<<std::endl;
                 if (*(st[i]->Type) == ParseTree::NodeType::BinExpr){
                         std::wcout<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetLeftExpr()<<' '<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetRightExpr()<<std::endl; 
                 }
                 if (*(st[i]->Type) == ParseTree::NodeType::Block){
-                        std::cout<<"a"<<std::endl;
                         // ParseTree::Block*  v = dynamic_cast<ParseTree::Block*>(st[i]);
                         TreeTraversal(dynamic_cast<ParseTree::Block*>(st[i])->Getstats());
                 }
         }
+        std::wcout<<"}"<<std::endl;
+
         
 };
  

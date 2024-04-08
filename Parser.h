@@ -65,6 +65,9 @@ public:
 	void Block(ParseTree::Block& B);
 	void Stat(ParseTree::Stat*& s, ParseTree::Block& B);
 	void Term(ParseTree::BinExpr*& b);
+	void SinglExpr(ParseTree::SinglExpr& se);
+	void Exist();
+	void NotExist();
 	void Word(std::wstring &str);
 
 	void Parse();

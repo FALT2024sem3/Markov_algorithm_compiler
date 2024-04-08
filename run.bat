@@ -1,4 +1,4 @@
-.\Coco.exe .\Markov_algo.atg
+.\Coco.exe .\Markov_algo.cpp.atg
 g++ -c Parser.cpp -o parser.o 
 g++ -c Scanner.cpp -o scanner.o
 g++ -c main.cpp

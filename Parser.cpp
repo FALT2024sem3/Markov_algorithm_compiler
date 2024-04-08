@@ -69,7 +69,7 @@ void Parser::Root() {
 void Parser::Block(ParseTree::Block& B) {
 		ParseTree::Stat* s; 
 		Expect(4 /* "{" */);
-		while (la->kind == _string || la->kind == 4 /* "{" */) {
+		while (la->kind == _string || la->kind == 4 /* "{" */ || la->kind == 6 /* "if" */) {
 			Stat(s, B);
 		}
 		Expect(5 /* "}" */);
@@ -79,26 +79,62 @@ void Parser::Block(ParseTree::Block& B) {
 }
 
 void Parser::Stat(ParseTree::Stat*& s, ParseTree::Block& B) {
-		ParseTree::Stat* ss; ParseTree::BinExpr* b; ParseTree::Block* bl = new ParseTree::Block(); 
+		ParseTree::Stat* ss; 
+		ParseTree::BinExpr* b; 
+		ParseTree::SinglExpr se;
+		ParseTree::Block* bl = new ParseTree::Block(); 
+		ParseTree::If* IF;
+		
 		if (la->kind == 4 /* "{" */) {
 			Block(*bl);
-			ss = dynamic_cast<ParseTree::Stat*>(bl); B.add(ss);
+			ss = dynamic_cast<ParseTree::Stat*>(bl);
+			B.add(ss);
 		} else if (la->kind == _string) {
 			Term(b);
-			ss = dynamic_cast<ParseTree::Stat*>(b); B.add(ss); 
-		} else SynErr(9);
+			ss = dynamic_cast<ParseTree::Stat*>(b);
+			B.add(ss); 
+		} else if (la->kind == 6 /* "if" */) {
+			Get();
+			Expect(7 /* "(" */);
+			SinglExpr(se);
+			Expect(8 /* ")" */);
+			Block(*bl);
+			ss = dynamic_cast<ParseTree::Stat*>( new ParseTree::If(se, bl) );
+			B.add(ss); 
+		} else SynErr(14);
 		
 }
 
 void Parser::Term(ParseTree::BinExpr*& b) {
 		std::wstring s1, s2; 
 		Word(s1);
-		Expect(6 /* "->" */);
+		Expect(9 /* "->" */);
 		Word(s2);
-		Expect(7 /* ";" */);
+		Expect(10 /* ";" */);
 		std::cout<<"BinExpr"<<std::endl;
-		b = (new ParseTree::BinExpr(new std::wstring(s1), new ParseTree::Operator(ParseTree::Operator::SUB) , new std::wstring(s2))); 
+		b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
 		
+}
+
+void Parser::SinglExpr(ParseTree::SinglExpr& se) {
+		std::wstring s; ParseTree::Operator op; 
+		if (la->kind == 11 /* "?" */) {
+			Exist();
+			op = ParseTree::Operator::EXIST; 
+		} else if (la->kind == 12 /* "!?" */) {
+			NotExist();
+			op = ParseTree::Operator::NOTEXIST; 
+		} else SynErr(15);
+		Word(s);
+		se = ParseTree::SinglExpr(op, s); 
+}
+
+void Parser::Exist() {
+		Expect(11 /* "?" */);
+}
+
+void Parser::NotExist() {
+		Expect(12 /* "!?" */);
 }
 
 void Parser::Word(std::wstring &str) {
@@ -207,7 +243,7 @@ void Parser::Parse() {
 }
 
 Parser::Parser(Scanner *scanner) {
-	maxT = 8;
+	maxT = 13;
 
 	ParserInitCaller<Parser>::CallInit(this);
 	dummyToken = NULL;
@@ -222,8 +258,8 @@ bool Parser::StartOf(int s) {
 	const bool T = true;
 	const bool x = false;
 
-	static bool set[1][10] = {
-		{T,x,x,x, x,x,x,x, x,x}
+	static bool set[1][15] = {
+		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x}
 	};
 
 
@@ -250,10 +286,16 @@ void Errors::SynErr(int line, int col, int n) {
 			case 3: s = coco_string_create(L"\"dafe\" expected"); break;
 			case 4: s = coco_string_create(L"\"{\" expected"); break;
 			case 5: s = coco_string_create(L"\"}\" expected"); break;
-			case 6: s = coco_string_create(L"\"->\" expected"); break;
-			case 7: s = coco_string_create(L"\";\" expected"); break;
-			case 8: s = coco_string_create(L"??? expected"); break;
-			case 9: s = coco_string_create(L"invalid Stat"); break;
+			case 6: s = coco_string_create(L"\"if\" expected"); break;
+			case 7: s = coco_string_create(L"\"(\" expected"); break;
+			case 8: s = coco_string_create(L"\")\" expected"); break;
+			case 9: s = coco_string_create(L"\"->\" expected"); break;
+			case 10: s = coco_string_create(L"\";\" expected"); break;
+			case 11: s = coco_string_create(L"\"?\" expected"); break;
+			case 12: s = coco_string_create(L"\"!?\" expected"); break;
+			case 13: s = coco_string_create(L"??? expected"); break;
+			case 14: s = coco_string_create(L"invalid Stat"); break;
+			case 15: s = coco_string_create(L"invalid SinglExpr"); break;
 
 		default:
 		{

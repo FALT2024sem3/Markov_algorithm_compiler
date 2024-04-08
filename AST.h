@@ -7,33 +7,31 @@
 #include <fstream>
 #include <vector>
 
-
 namespace ParseTree
 {
 
-enum class Operator{ SUB };
-enum class NodeType{ StringValueLiteral, BinExpr, UnaryExpr, Block, If };
+enum class Operator{ SUB, EXIST, NOTEXIST };
+enum class NodeType{ BinExpr, UnaryExpr, Block, If };
 
-class Node{
+class Node{                    // базовый класс, от которого наследуются все остальные
     virtual const char* getMsg() { return "ParentClass"; }
 public:
-    NodeType* Type;
+    NodeType Type;
 };
 
 //---------------------Expressions--------------------//
 
 class Expr : public Node{};
 
-
-class UnaryExpr : public Expr{
-    Operator* op;
-    std::wstring* e;
+class SinglExpr : public Expr{ // для выражений вида: ?"abc" или !?"abc", используемых в if 
+    Operator op;
+    std::wstring e;
 public:
-    std::wstring GetExpr(){ return *e; }
-    Operator GetOp(){ return *op; }
-    UnaryExpr(){}
+    std::wstring GetExpr(){ return e; }
+    Operator GetOp(){ return op; }
+    SinglExpr(){}
 
-    UnaryExpr (Operator* x, std::wstring* y) { op = x; e = y; this->Type = new NodeType(NodeType::UnaryExpr);}
+    SinglExpr (Operator x, std::wstring y) { op = x; e = y; this->Type = NodeType::UnaryExpr;}
 };
 
 //---------------------Statements--------------------//
@@ -42,37 +40,43 @@ class Stat : public Node{
     virtual const char* getMsg() { return "StatClass"; }
 };
 
-class BinExpr : public Stat{
+class BinExpr : public Stat{   // для выражений вида: "abc"->"def", по сути это наши замены
 private:
-    Operator* op;
-    std::wstring* left;
-    std::wstring* right;
+    Operator op;
+    std::wstring left;
+    std::wstring right;
 public:
     BinExpr(){}
-    BinExpr(std::wstring* f1, Operator* o, std::wstring* f2) { op = o; left = f1; right = f2; this->Type = new NodeType(NodeType::BinExpr);}
+    BinExpr(std::wstring f1, Operator o, std::wstring f2) { op = o; left = f1; right = f2; this->Type = NodeType::BinExpr;}
 
-    std::wstring GetLeftExpr(){ return *left; }
-    std::wstring GetRightExpr(){ return *right; }
-    Operator GetOp(){ return *op; }
+    std::wstring GetLeftExpr(){ return left; }
+    std::wstring GetRightExpr(){ return right; }
+    Operator GetOp(){ return op; }
     
 };
 
-class If : public Stat {
+class Block : public Stat {    // блок, который хранит все остальный конструкции
+    std::vector<Stat*> stats;
 public:
-    UnaryExpr* cond;
-    Stat* stat;
-    If (UnaryExpr* e, Stat* s) { cond = e; stat = s; this->Type = new NodeType(NodeType::If); }
+    std::vector<Stat*> Getstats(){ return stats; }
+    Block(){ this->Type = NodeType::Block;}
+    void add (Stat* s) { stats.push_back(s); }
 };
 
-class Block : public Stat {
-    std::vector<Stat*>* stats;
+
+
+class If : public Stat {       // конструкция блока if
+    SinglExpr cond;
+    Block* block;
 public:
-    std::vector<Stat*> Getstats(){ return *stats; }
-    Block(){ this->Type = new NodeType(NodeType::Block); stats = new std::vector<Stat*>;}
-    void add (Stat* s) { stats->push_back(s); }
+    SinglExpr GetSinglExpr(){ return cond; }
+    Block* GetBlock() { return block; }
+    If (){ this->Type = NodeType::If; }
+    If (SinglExpr e,Block* s) { cond = e; block = s; this->Type = NodeType::If; }
 };
 
-class AST{
+
+class AST{                     // класс для работы с нашим AST деревом, хранит самый верхний уровень вложенности 
 public:
     inline static Block Root;    
 };

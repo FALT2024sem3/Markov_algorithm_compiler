@@ -39,13 +39,18 @@ PRODUCTIONS
 
 
   Stat <ParseTree::Stat*& s, ParseTree::Block& B>    = (. ParseTree::Stat* ss; ParseTree::BinExpr* b; ParseTree::Block* bl = new ParseTree::Block(); .) ( Block<*bl>  (. ss = dynamic_cast<ParseTree::Stat*>(bl); B.add(ss);.) 
-                                | Term<b> (. ss = dynamic_cast<ParseTree::Stat*>(b); B.add(ss); .)  ) (..).
+                                | Term<b> (. ss = dynamic_cast<ParseTree::Stat*>(b); B.add(ss);
+                                .)  ) (..).
+
+ 
   
   Term <ParseTree::BinExpr*& b> = (. std::wstring s1, s2; .) Word<s1> "->" Word<s2> ";"
                                 (. 
                                 std::cout<<"BinExpr"<<std::endl;
-                                b = (new ParseTree::BinExpr(new std::wstring(s1), new ParseTree::Operator(ParseTree::Operator::SUB) , new std::wstring(s2))); 
+                                b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
                                 .).
+
+
 
   Word<std::wstring &str>      = string (. str=t->val; .).
 

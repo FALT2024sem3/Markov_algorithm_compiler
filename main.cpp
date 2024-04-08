@@ -6,23 +6,39 @@
 #include <string>
 #include <vector>
 
-void TreeTraversal(const std::vector<ParseTree::Stat*>& st){
+void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход нашего дерева
         std::wcout<<st.size()<<std::endl;
         std::wcout<<"{"<<std::endl;
+        
         for (size_t i = 0; i < st.size(); i++)
         {
-                // std::cout<<"IN"<<std::endl;
-                if (*(st[i]->Type) == ParseTree::NodeType::BinExpr){
+                if (st[i]->Type == ParseTree::NodeType::BinExpr){ // вывод бинарных выражений
                         std::wcout<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetLeftExpr()<<' '<<(dynamic_cast<ParseTree::BinExpr*>(st[i]))->GetRightExpr()<<std::endl; 
                 }
-                if (*(st[i]->Type) == ParseTree::NodeType::Block){
-                        // ParseTree::Block*  v = dynamic_cast<ParseTree::Block*>(st[i]);
+                if (st[i]->Type == ParseTree::NodeType::Block){   // вывод блока
                         TreeTraversal(dynamic_cast<ParseTree::Block*>(st[i])->Getstats());
+                }
+                if (st[i]->Type == ParseTree::NodeType::If){      // вывод конструкции if
+                        std::wcout << std::endl;
+                        std::wcout << "IF: " << std::endl;
+                        switch (dynamic_cast<ParseTree::If*>(st[i])->GetSinglExpr().GetOp())
+                        {
+                        case ParseTree::Operator::EXIST:
+                                std::wcout << "?" << ' ';
+                                break;
+                        
+                        case ParseTree::Operator::NOTEXIST:
+                                std::wcout << "!?" << ' ';
+                                break;
+                        }
+                        std::wcout << (dynamic_cast<ParseTree::If*>(st[i]))->GetSinglExpr().GetExpr() <<std::endl;
+                        TreeTraversal(dynamic_cast<ParseTree::If*>(st[i])->GetBlock()->Getstats());
+                        std::wcout << "ENDIF" << std::endl;
+                        std::wcout << std::endl;
                 }
         }
         std::wcout<<"}"<<std::endl;
 
-        
 };
  
 main(int argc, char *argv[])
@@ -35,11 +51,6 @@ main(int argc, char *argv[])
                 Scanner *scanner = new Scanner(file);
                 Parser *parser   = new Parser(scanner);
                 parser->Parse();
-
-                // if (*(ParseTree::AST::Root.Type) == ParseTree::NodeType::Block)
-                //         cout<<"YAPPI"<<endl;
-                // if (*(ParseTree::AST::Root.Getstats()[0]->Type) == ParseTree::NodeType::BinExpr){
-                // }
 
                 TreeTraversal(ParseTree::AST::Root.Getstats());
  

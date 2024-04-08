@@ -1,0 +1,69 @@
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include "AST.h"
+
+COMPILER Root
+
+IGNORECASE
+CHARACTERS
+
+leter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".
+digit = "0123456789".
+verbatimStringChar = ANY - '"'.
+cr  = '\r'.
+lf  = '\n'.
+tab = '\t'.
+ 
+TOKENS
+
+ident = leter {leter | digit | "_"}.
+string = "\"" {verbatimStringChar} "\"".
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO lf
+ 
+IGNORE cr + lf + tab
+ 
+PRODUCTIONS
+  
+  Root  = "DAFE" Block<ParseTree::AST::Root> .
+
+  Block <ParseTree::Block& B>        = (. ParseTree::Stat* s; .) "{" {Stat<s, B>} "}"
+                                (. 
+                                std::cout<<"Block"<<std::endl;
+                                
+                                .).
+
+
+  Stat <ParseTree::Stat*& s, ParseTree::Block& B>    = (. ParseTree::Stat* ss; 
+                                                          ParseTree::BinExpr* b; 
+                                                          ParseTree::SinglExpr se;
+                                                          ParseTree::Block* bl = new ParseTree::Block(); 
+                                                          ParseTree::If* IF;
+                                                          .) 
+                                ( Block<*bl>  (. ss = dynamic_cast<ParseTree::Stat*>(bl);
+                                                 B.add(ss);.) 
+                                | Term<b> (. ss = dynamic_cast<ParseTree::Stat*>(b);
+                                             B.add(ss); .)
+                                | "if" "(" SinglExpr<se> ")" Block<*bl> (. ss = dynamic_cast<ParseTree::Stat*>( new ParseTree::If(se, bl) );
+                                                                         B.add(ss); .)                               
+                                  ) (..).
+
+  SinglExpr <ParseTree::SinglExpr& se> = (. std::wstring s; ParseTree::Operator op; .) (Exist(. op = ParseTree::Operator::EXIST; .)|NotExist(. op = ParseTree::Operator::NOTEXIST; .)) Word<s> (. se = ParseTree::SinglExpr(op, s); .).
+  
+  Term <ParseTree::BinExpr*& b> = (. std::wstring s1, s2; .) Word<s1> "->" Word<s2> ";"
+                                (. 
+                                std::cout<<"BinExpr"<<std::endl;
+                                b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
+                                .).
+
+  Exist = "?".
+  NotExist = "!?".
+
+
+  Word<std::wstring &str>      = string (. str=t->val; .).
+
+END Root.  

@@ -75,6 +75,18 @@ public:
     If (SinglExpr e,Block* s) { cond = e; block = s; this->Type = NodeType::If; }
 };
 
+class IfElse : public Stat {       // конструкция блока if
+    SinglExpr cond;
+    Block* IfBlock;
+    Block* ElseBlock;
+public:
+    SinglExpr GetSinglExpr(){ return cond; }
+    Block* GetIfBlock() { return IfBlock; }
+    Block* GetElseBlock() { return ElseBlock; }
+    IfElse (){ this->Type = NodeType::If; }
+    IfElse (SinglExpr e,Block* s1, Block* s2) { cond = e; IfBlock = s1; ElseBlock = s2; this->Type = NodeType::If; }
+};
+
 
 class AST{                     // класс для работы с нашим AST деревом, хранит самый верхний уровень вложенности 
 public:

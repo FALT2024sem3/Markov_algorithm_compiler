@@ -29,34 +29,37 @@ IGNORE cr + lf + tab
  
 PRODUCTIONS
   
-  Root  = "DAFE" Block<ParseTree::AST::Root> .
+  Root                                               = "DAFE" Block<ParseTree::AST::Root> .
 
-  Block <ParseTree::Block& B>        = (. ParseTree::Stat* s; .) "{" {Stat<s, B>} "}"
-                                (. 
-                                std::cout<<"Block"<<std::endl;
-                                
-                                .).
+  Block <ParseTree::Block& B>                        = (. ParseTree::Stat* s; .) "{" {Stat<s, B>} "}".
 
 
   Stat <ParseTree::Stat*& s, ParseTree::Block& B>    = (. ParseTree::Stat* ss; 
                                                           ParseTree::BinExpr* b; 
                                                           ParseTree::SinglExpr se;
-                                                          ParseTree::Block* bl = new ParseTree::Block(); 
+                                                          ParseTree::Block* bl = new ParseTree::Block();
+                                                          ParseTree::Block* bl2 = new ParseTree::Block(); 
                                                           ParseTree::If* IF;
                                                           .) 
                                 ( Block<*bl>  (. ss = dynamic_cast<ParseTree::Stat*>(bl);
-                                                 B.add(ss);.) 
-                                | Term<b> (. ss = dynamic_cast<ParseTree::Stat*>(b);
-                                             B.add(ss); .)
-                                | "if" "(" SinglExpr<se> ")" Block<*bl> (. ss = dynamic_cast<ParseTree::Stat*>( new ParseTree::If(se, bl) );
-                                                                         B.add(ss); .)                               
-                                  ) (..).
+                                                 .) 
+                                | Term<b> (. 
+                                  ss = dynamic_cast<ParseTree::Stat*>(b);
+                                  .)
+                                | "if" "(" SinglExpr<se> ")" Block<*bl> ["else" Block<*bl2>](.
+                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(se, bl, bl2)); 
+                                  .)                           
+                                ) (.
+                                  B.add(ss);
+                                  .).
 
-  SinglExpr <ParseTree::SinglExpr& se> = (. std::wstring s; ParseTree::Operator op; .) (Exist(. op = ParseTree::Operator::EXIST; .)|NotExist(. op = ParseTree::Operator::NOTEXIST; .)) Word<s> (. se = ParseTree::SinglExpr(op, s); .).
+SinglExpr <ParseTree::SinglExpr& se>    = (. std::wstring s;
+                                           ParseTree::Operator op; 
+                                        .) 
+                                        (Exist(. op = ParseTree::Operator::EXIST; .) | NotExist(. op = ParseTree::Operator::NOTEXIST; .)) Word<s> (. se = ParseTree::SinglExpr(op, s); .).
   
   Term <ParseTree::BinExpr*& b> = (. std::wstring s1, s2; .) Word<s1> "->" Word<s2> ";"
-                                (. 
-                                std::cout<<"BinExpr"<<std::endl;
+                                (.
                                 b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
                                 .).
 

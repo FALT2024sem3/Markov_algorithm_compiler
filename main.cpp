@@ -7,7 +7,6 @@
 #include <vector>
 
 void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход нашего дерева
-        std::wcout<<st.size()<<std::endl;
         std::wcout<<"{"<<std::endl;
         
         for (size_t i = 0; i < st.size(); i++)
@@ -18,10 +17,10 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
                 if (st[i]->Type == ParseTree::NodeType::Block){   // вывод блока
                         TreeTraversal(dynamic_cast<ParseTree::Block*>(st[i])->Getstats());
                 }
-                if (st[i]->Type == ParseTree::NodeType::If){      // вывод конструкции if
+                if (st[i]->Type == ParseTree::NodeType::IfElse){      // вывод конструкции ifelse
                         std::wcout << std::endl;
                         std::wcout << "IF: " << std::endl;
-                        switch (dynamic_cast<ParseTree::If*>(st[i])->GetSinglExpr().GetOp())
+                        switch (dynamic_cast<ParseTree::IfElse*>(st[i])->GetSinglExpr().GetOp())
                         {
                         case ParseTree::Operator::EXIST:
                                 std::wcout << "?" << ' ';
@@ -31,9 +30,15 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
                                 std::wcout << "!?" << ' ';
                                 break;
                         }
-                        std::wcout << (dynamic_cast<ParseTree::If*>(st[i]))->GetSinglExpr().GetExpr() <<std::endl;
-                        TreeTraversal(dynamic_cast<ParseTree::If*>(st[i])->GetBlock()->Getstats());
+                        std::wcout << (dynamic_cast<ParseTree::IfElse*>(st[i]))->GetSinglExpr().GetExpr() <<std::endl;
+                        TreeTraversal(dynamic_cast<ParseTree::IfElse*>(st[i])->GetIfBlock()->Getstats());
                         std::wcout << "ENDIF" << std::endl;
+                        if (!dynamic_cast<ParseTree::IfElse*>(st[i])->GetElseBlock()->Getstats().empty()){
+                        std::wcout << "ELSE: " << std::endl;
+                        TreeTraversal(dynamic_cast<ParseTree::IfElse*>(st[i])->GetElseBlock()->Getstats());
+                        std::wcout << "ENDELSE" << std::endl;
+                        }
+
                         std::wcout << std::endl;
                 }
         }

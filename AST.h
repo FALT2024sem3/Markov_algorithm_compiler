@@ -11,7 +11,7 @@ namespace ParseTree
 {
 
 enum class Operator{ SUB, EXIST, NOTEXIST };
-enum class NodeType{ BinExpr, UnaryExpr, Block, If };
+enum class NodeType{ BinExpr, UnaryExpr, Block, If, IfElse };
 
 class Node{                    // базовый класс, от которого наследуются все остальные
     virtual const char* getMsg() { return "ParentClass"; }
@@ -84,7 +84,7 @@ public:
     Block* GetIfBlock() { return IfBlock; }
     Block* GetElseBlock() { return ElseBlock; }
     IfElse (){ this->Type = NodeType::If; }
-    IfElse (SinglExpr e,Block* s1, Block* s2) { cond = e; IfBlock = s1; ElseBlock = s2; this->Type = NodeType::If; }
+    IfElse (SinglExpr e,Block* s1, Block* s2) { cond = e; IfBlock = s1; ElseBlock = s2; this->Type = NodeType::IfElse; }
 };
 
 

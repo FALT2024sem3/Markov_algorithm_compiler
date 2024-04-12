@@ -6,6 +6,9 @@ DAFE
     if (?"a") {
         "o"->"p";
     }
+    else{
+        "Vostok" -> "Gagarin";
+    }
     "who"->"?";
     }
     "o"->"r";

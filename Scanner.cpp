@@ -420,8 +420,8 @@ Scanner::~Scanner() {
 void Scanner::Init() {
 	EOL    = '\n';
 	eofSym = 0;
-	maxT = 13;
-	noSym = 13;
+	maxT = 14;
+	noSym = 14;
 	int i;
 	for (i = 97; i <= 122; ++i) start.set(i, 1);
 	start.set(34, 2);
@@ -436,6 +436,7 @@ void Scanner::Init() {
 		start.set(Buffer::EoF, -1);
 	keywords.set(L"dafe", 3);
 	keywords.set(L"if", 6);
+	keywords.set(L"else", 9);
 
 
 	tvalLength = 128;
@@ -644,17 +645,17 @@ Token* Scanner::NextToken() {
 			else {goto case_0;}
 		case 9:
 			case_9:
-			{t->kind = 9; break;}
-		case 10:
 			{t->kind = 10; break;}
-		case 11:
+		case 10:
 			{t->kind = 11; break;}
+		case 11:
+			{t->kind = 12; break;}
 		case 12:
 			if (ch == L'?') {AddCh(); goto case_13;}
 			else {goto case_0;}
 		case 13:
 			case_13:
-			{t->kind = 12; break;}
+			{t->kind = 13; break;}
 
 	}
 	AppendVal(t);

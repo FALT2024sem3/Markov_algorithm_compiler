@@ -65,10 +65,13 @@ public:
 	void Block(ParseTree::Block& B);
 	void Stat(ParseTree::Stat*& s, ParseTree::Block& B);
 	void Term(ParseTree::BinExpr*& b);
+	void Condition(ParseTree::IfElse& conds);
 	void SinglExpr(ParseTree::SinglExpr& se);
-	void Exist();
-	void NotExist();
+	void Or();
+	void And();
+	void Not();
 	void Word(std::wstring &str);
+	void SubOp();
 
 	void Parse();
 

@@ -18,28 +18,22 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
                         TreeTraversal(dynamic_cast<ParseTree::Block*>(st[i])->Getstats());
                 }
                 if (st[i]->Type == ParseTree::NodeType::IfElse){      // вывод конструкции ifelse
-                        std::wcout << std::endl;
-                        std::wcout << "IF: " << std::endl;
-                        switch (dynamic_cast<ParseTree::IfElse*>(st[i])->GetSinglExpr().GetOp())
-                        {
-                        case ParseTree::Operator::EXIST:
-                                std::wcout << "?" << ' ';
-                                break;
-                        
-                        case ParseTree::Operator::NOTEXIST:
-                                std::wcout << "!?" << ' ';
-                                break;
-                        }
-                        std::wcout << (dynamic_cast<ParseTree::IfElse*>(st[i]))->GetSinglExpr().GetExpr() <<std::endl;
-                        TreeTraversal(dynamic_cast<ParseTree::IfElse*>(st[i])->GetIfBlock()->Getstats());
-                        std::wcout << "ENDIF" << std::endl;
-                        if (!dynamic_cast<ParseTree::IfElse*>(st[i])->GetElseBlock()->Getstats().empty()){
-                        std::wcout << "ELSE: " << std::endl;
-                        TreeTraversal(dynamic_cast<ParseTree::IfElse*>(st[i])->GetElseBlock()->Getstats());
-                        std::wcout << "ENDELSE" << std::endl;
+                        std::cout<<(dynamic_cast<ParseTree::IfElse*>(st[i]))->GetCond().size()<<std::endl;
+                        std::vector<ParseTree::Expr*> vec = (dynamic_cast<ParseTree::IfElse*>(st[i]))->GetCond();
+
+                        for (auto i : vec){
+                                if (i->Type == ParseTree::NodeType::UnaryExpr){
+                                        std::wcout<<(dynamic_cast<ParseTree::SinglExpr*>(i))->GetExpr()<<std::endl;
+                                }
+                                if (i->Type == ParseTree::NodeType::LogOp){
+
+                                        if ((dynamic_cast<ParseTree::LogOp*>(i))->GetLogOp() == ParseTree::Operator::AND)
+                                                std::wcout<<"AND"<<std::endl;
+                                        if ((dynamic_cast<ParseTree::LogOp*>(i))->GetLogOp() == ParseTree::Operator::OR)
+                                                std::wcout<<"OR"<<std::endl;
+                                }
                         }
 
-                        std::wcout << std::endl;
                 }
         }
         std::wcout<<"}"<<std::endl;

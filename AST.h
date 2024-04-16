@@ -10,8 +10,8 @@
 namespace ParseTree
 {
 
-enum class Operator{ SUB, EXIST, NOTEXIST };
-enum class NodeType{ BinExpr, UnaryExpr, Block, If, IfElse };
+enum class Operator{ SUB, EXIST, NOT, AND, OR };
+enum class NodeType{ BinExpr, UnaryExpr, Block, If, IfElse, LogOp };
 
 class Node{                    // базовый класс, от которого наследуются все остальные
     virtual const char* getMsg() { return "ParentClass"; }
@@ -29,8 +29,9 @@ class SinglExpr : public Expr{ // для выражений вида: ?"abc" и�
 public:
     std::wstring GetExpr(){ return e; }
     Operator GetOp(){ return op; }
-    SinglExpr(){}
 
+    SinglExpr(){}
+    SinglExpr(const SinglExpr& s) { op = s.op; e = s.e ; this->Type = NodeType::UnaryExpr;}
     SinglExpr (Operator x, std::wstring y) { op = x; e = y; this->Type = NodeType::UnaryExpr;}
 };
 
@@ -65,26 +66,27 @@ public:
 
 
 
-class If : public Stat {       // конструкция блока if
-    SinglExpr cond;
-    Block* block;
+class LogOp : public Expr{
+    Operator op;
 public:
-    SinglExpr GetSinglExpr(){ return cond; }
-    Block* GetBlock() { return block; }
-    If (){ this->Type = NodeType::If; }
-    If (SinglExpr e,Block* s) { cond = e; block = s; this->Type = NodeType::If; }
+    Operator GetLogOp() { return op; }
+
+    LogOp(){}
+    LogOp(const LogOp& l) { this->op = l.op; this->Type = NodeType::LogOp; }
+    LogOp(Operator op){ this->op = op; this->Type = NodeType::LogOp; }
 };
 
 class IfElse : public Stat {       // конструкция блока if
-    SinglExpr cond;
+    std::vector<Expr*> Cond;
     Block* IfBlock;
     Block* ElseBlock;
 public:
-    SinglExpr GetSinglExpr(){ return cond; }
+    void AddCond(Expr* e) { Cond.push_back(e); }
+    std::vector<Expr*> GetCond(){ return Cond; }
     Block* GetIfBlock() { return IfBlock; }
     Block* GetElseBlock() { return ElseBlock; }
     IfElse (){ this->Type = NodeType::If; }
-    IfElse (SinglExpr e,Block* s1, Block* s2) { cond = e; IfBlock = s1; ElseBlock = s2; this->Type = NodeType::IfElse; }
+    IfElse (std::vector<Expr*> e,Block* s1, Block* s2) { Cond = e; IfBlock = s1; ElseBlock = s2; this->Type = NodeType::IfElse; }
 };
 
 

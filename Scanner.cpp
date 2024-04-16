@@ -420,8 +420,8 @@ Scanner::~Scanner() {
 void Scanner::Init() {
 	EOL    = '\n';
 	eofSym = 0;
-	maxT = 14;
-	noSym = 14;
+	maxT = 15;
+	noSym = 15;
 	int i;
 	for (i = 97; i <= 122; ++i) start.set(i, 1);
 	start.set(34, 2);
@@ -429,14 +429,15 @@ void Scanner::Init() {
 	start.set(125, 5);
 	start.set(40, 6);
 	start.set(41, 7);
-	start.set(45, 8);
-	start.set(59, 10);
-	start.set(63, 11);
-	start.set(33, 12);
+	start.set(59, 8);
+	start.set(45, 9);
 		start.set(Buffer::EoF, -1);
 	keywords.set(L"dafe", 3);
 	keywords.set(L"if", 6);
 	keywords.set(L"else", 9);
+	keywords.set(L"not", 11);
+	keywords.set(L"or", 12);
+	keywords.set(L"and", 13);
 
 
 	tvalLength = 128;
@@ -641,21 +642,13 @@ Token* Scanner::NextToken() {
 		case 7:
 			{t->kind = 8; break;}
 		case 8:
-			if (ch == L'>') {AddCh(); goto case_9;}
-			else {goto case_0;}
-		case 9:
-			case_9:
 			{t->kind = 10; break;}
-		case 10:
-			{t->kind = 11; break;}
-		case 11:
-			{t->kind = 12; break;}
-		case 12:
-			if (ch == L'?') {AddCh(); goto case_13;}
+		case 9:
+			if (ch == L'>') {AddCh(); goto case_10;}
 			else {goto case_0;}
-		case 13:
-			case_13:
-			{t->kind = 13; break;}
+		case 10:
+			case_10:
+			{t->kind = 14; break;}
 
 	}
 	AppendVal(t);

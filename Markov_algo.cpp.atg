@@ -36,37 +36,62 @@ PRODUCTIONS
 
   Stat <ParseTree::Stat*& s, ParseTree::Block& B>    = (. ParseTree::Stat* ss; 
                                                           ParseTree::BinExpr* b; 
-                                                          ParseTree::SinglExpr se;
+                                                          std::vector<ParseTree::Expr*> se;
                                                           ParseTree::Block* bl = new ParseTree::Block();
                                                           ParseTree::Block* bl2 = new ParseTree::Block(); 
-                                                          ParseTree::If* IF;
+                                                          ParseTree::IfElse IF;
                                                           .) 
                                 ( Block<*bl>  (. ss = dynamic_cast<ParseTree::Stat*>(bl);
                                                  .) 
                                 | Term<b> (. 
                                   ss = dynamic_cast<ParseTree::Stat*>(b);
                                   .)
-                                | "if" "(" SinglExpr<se> ")" Block<*bl> ["else" Block<*bl2>](.
-                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(se, bl, bl2)); 
+                                | "if" "(" Condition<IF> ")" Block<*bl> ["else" Block<*bl2>](.
+                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(IF.GetCond(), bl, bl2)); 
                                   .)                           
                                 ) (.
                                   B.add(ss);
                                   .).
 
-SinglExpr <ParseTree::SinglExpr& se>    = (. std::wstring s;
-                                           ParseTree::Operator op; 
-                                        .) 
-                                        (Exist(. op = ParseTree::Operator::EXIST; .) | NotExist(. op = ParseTree::Operator::NOTEXIST; .)) Word<s> (. se = ParseTree::SinglExpr(op, s); .).
+Condition <ParseTree::IfElse& conds> = (.
+                                              ParseTree::Expr *ss, *opPtr;
+                                              ParseTree::SinglExpr se1, se2;
+                                              ParseTree::LogOp op;
+                                            .)
+                                            SinglExpr<se1>(.
+                                            ss = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(se1)); 
+                                            conds.AddCond(ss);
+                                            .)         
+                                            { (Or (. op = ParseTree::Operator::OR; .)
+                                            | And (. op = ParseTree::Operator::AND; .) ) SinglExpr<se2>
+                                            (. 
+                                                opPtr = dynamic_cast<ParseTree::Expr*>(new ParseTree::LogOp(op));
+                                                conds.AddCond(opPtr);
+                                                ss = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(se2)); 
+                                                conds.AddCond(ss);
+                                             .)
+                                            }.
+
+SinglExpr <ParseTree::SinglExpr& se>    = (.
+                                            std::wstring s;
+                                            ParseTree::Operator op = ParseTree::Operator::EXIST; 
+                                          .) 
+                                        [Not(. op = ParseTree::Operator::NOT; .)] Word<s> (. se = ParseTree::SinglExpr(op, s); .).
   
-  Term <ParseTree::BinExpr*& b> = (. std::wstring s1, s2; .) Word<s1> "->" Word<s2> ";"
-                                (.
-                                b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
-                                .).
+Term <ParseTree::BinExpr*& b> = (. 
+                                   std::wstring s1, s2;
+                                 .)
+                                  Word<s1> SubOp Word<s2> ";"
+                                  (.
+                                  b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
+                                  .).
 
-  Exist = "?".
-  NotExist = "!?".
+Not   = "not".
+Or    = "or".
+And   = "and".
+SubOp = "->".
 
 
-  Word<std::wstring &str>      = string (. str=t->val; .).
+Word<std::wstring &str>      = string (. str=t->val; .).
 
 END Root.  

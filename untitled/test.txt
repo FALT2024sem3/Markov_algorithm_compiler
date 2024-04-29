@@ -1,0 +1,16 @@
+DAFE
+{
+    "d"->"o";;-12;
+    {
+    "c"->"t";
+    if ("a" and "s" or "w") {
+        "o"->"p";
+    }
+    else{
+        "Vostok" -> "Gagarin";
+    }
+    "who"->"?";
+    }
+    ""->"r";
+}
+

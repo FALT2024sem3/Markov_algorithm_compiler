@@ -1,12 +1,14 @@
 DAFE
 {
+link:
     "d"->"o";
     {
     "c"->"t";
-    if ("a" and "s" or "w") {
+    if ("a" and "s" or not "w") {
         "o"->"p";
     }
     else{
+        goto link;
         "Vostok" -> "Gagarin";
     }
     "who"->"?";

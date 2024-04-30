@@ -1,0 +1,78 @@
+#include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include "AST.h"
+
+ParseTree::Expr* root;
+ 
+COMPILER expr 
+ 
+ 
+int toInt(const std::wstring& strbuf)
+{
+    std::wstringstream converter;
+    int value = 0;
+ 
+    converter << strbuf;
+    converter >> value;
+    return value;
+}
+ 
+std::wstring toString ( int Number )
+{
+  std::wostringstream ss;
+  ss << Number;
+  return ss.str();
+}
+ 
+ 
+IGNORECASE
+CHARACTERS
+
+digit = "0123456789".
+cr  = '\r'.
+lf  = '\n'.
+tab = '\t'.
+ 
+TOKENS
+
+number = digit {digit}.
+ 
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO cr lf
+ 
+IGNORE cr + lf + tab
+ 
+PRODUCTIONS
+ 
+  expr (. std::wstring str; .) = (. std::wstring s,s1,s2,s3,s4; .) 
+                              expression<s> (. str=s; .) ';'
+                              (.
+                                        std::wofstream outfile ("out.txt", std::ios_base::out);
+                                        outfile << str << std::endl;          
+                                        outfile.close();
+                                        std::cout << "expr" << std::endl;
+                              .)
+                              .
+  
+  expression<std::wstring &str> = 
+                                  (. std::wstring s1; .) (. std::cout << "expression" << std::endl; .) Term<s1> (. str=s1; .) {
+                                    (. std::wstring s2, s3; .) "or" expression<s2> 
+                                  }.
+                                  
+  
+  Term<std::wstring &str> =
+                            (. std::wstring s1; .) (. std::cout << "Term" << std::endl; .)  Primary_expression<s1> (. str=s1; .){
+                            (. std::wstring s2, s3; .) "and" Primary_expression<s3> 
+                            }.
+
+
+  Primary_expression<std::wstring &str> = (. std::wstring s2; .) (. std::cout << "Primary_expression" << std::endl; .) ('(' expression<s2> ')'  (. str = s2; .)
+                                          | (. std::wstring s1; .) Unury<s1>) .
+  
+  Unury<std::wstring &str> = "'" number "'" (. str=t->val; std::cout << "Unury" << std::endl; .).
+  
+  
+END expr.  

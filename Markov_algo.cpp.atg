@@ -40,14 +40,22 @@ PRODUCTIONS
                                                           ParseTree::Block* bl = new ParseTree::Block();
                                                           ParseTree::Block* bl2 = new ParseTree::Block(); 
                                                           ParseTree::IfElse IF;
+                                                          ParseTree::Link link;
+                                                          ParseTree::Goto Gt;
                                                           .) 
                                 ( Block<*bl>  (. ss = dynamic_cast<ParseTree::Stat*>(bl);
                                                  .) 
                                 | Term<b> (. 
                                   ss = dynamic_cast<ParseTree::Stat*>(b);
                                   .)
-                                | "if" "(" Condition<IF> ")" Block<*bl> ["else" Block<*bl2>](.
-                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(IF.GetCond(), bl, bl2)); 
+                         //       | "if" "(" Condition<IF> ")" Block<*bl> ["else" Block<*bl2>](.
+                           //       ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(IF.GetCond(), bl, bl2)); 
+                             //     .)                           
+                                | Link<link>(.
+                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link)); 
+                                  .)                           
+                                | Goto<Gt>(.
+                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt)); 
                                   .)                           
                                 ) (.
                                   B.add(ss);
@@ -77,7 +85,13 @@ SinglExpr <ParseTree::SinglExpr& se>    = (.
                                             ParseTree::Operator op = ParseTree::Operator::EXIST; 
                                           .) 
                                         [Not(. op = ParseTree::Operator::NOT; .)] Word<s> (. se = ParseTree::SinglExpr(op, s); .).
-  
+
+Link<ParseTree::Link& link>  = (. std::wstring s; .) 
+                                  Ident<s> ":" (. link.SetName(s); .).
+
+Goto<ParseTree::Goto& Gt>  =  (. std::wstring s; .) 
+                                    GOTO Ident<s> ";" (. Gt.SetLink(s); .).
+
 Term <ParseTree::BinExpr*& b> = (. 
                                    std::wstring s1, s2;
                                  .)
@@ -86,11 +100,13 @@ Term <ParseTree::BinExpr*& b> = (.
                                   b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
                                   .).
 
+GOTO  = "goto".
 Not   = "not".
 Or    = "or".
 And   = "and".
 SubOp = "->".
 
+Ident<std::wstring &str>     = ident (. str=t->val; .).
 
 Word<std::wstring &str>      = string (. str=t->val; .).
 

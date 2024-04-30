@@ -11,7 +11,8 @@ namespace ParseTree
 {
 
 enum class Operator{ SUB, EXIST, NOT, AND, OR };
-enum class NodeType{ BinExpr, UnaryExpr, Block, If, IfElse, LogOp };
+enum class NodeType{ BinExpr, SinglExpr, Block, If, IfElse, BinLogOp, SinglLogOp ,Link, Goto };
+enum class TypeOfLogicOp{ AND, OR };
 
 class Node{                    // базовый класс, от которого наследуются все остальные
     virtual const char* getMsg() { return "ParentClass"; }
@@ -29,10 +30,30 @@ class SinglExpr : public Expr{ // для выражений вида: ?"abc" и�
 public:
     std::wstring GetExpr(){ return e; }
     Operator GetOp(){ return op; }
-
     SinglExpr(){}
-    SinglExpr(const SinglExpr& s) { op = s.op; e = s.e ; this->Type = NodeType::UnaryExpr;}
-    SinglExpr (Operator x, std::wstring y) { op = x; e = y; this->Type = NodeType::UnaryExpr;}
+    SinglExpr(const SinglExpr& s) { op = s.op; e = s.e ; this->Type = NodeType::SinglExpr;}
+    SinglExpr (Operator x, std::wstring y) { op = x; e = y; this->Type = NodeType::SinglExpr;}
+};
+
+class BinLogOp : public Expr{
+    Expr* LeftOp;
+    Expr* RigthOp;
+    Operator LogType;
+public:
+    Expr* GetLeftOp(){ return this->LeftOp; }
+    Expr* GetRighttOp(){ return this->RigthOp; }
+    Operator GetTypeLogOp () { return LogType; }
+    BinLogOp(){}
+    BinLogOp(Expr *l, Expr *r, Operator tp){ this->LeftOp = l; this->RigthOp = r; this->LogType = tp; this->Type = NodeType::BinLogOp;}
+};
+
+class SinglLogOp : public Expr{
+    Expr* Op;
+    TypeOfLogicOp LogType;
+public:
+    Expr* GetOp(){ return this->Op; }
+    SinglLogOp(){}
+    SinglLogOp(Expr *o, TypeOfLogicOp tp){ this->Op = o; this->LogType = tp; this->Type = NodeType::SinglLogOp;}
 };
 
 //---------------------Statements--------------------//
@@ -64,29 +85,38 @@ public:
     void add (Stat* s) { stats.push_back(s); }
 };
 
-
-
-class LogOp : public Expr{
-    Operator op;
+class Link : public Stat{
+    std::wstring name;
 public:
-    Operator GetLogOp() { return op; }
-
-    LogOp(){}
-    LogOp(const LogOp& l) { this->op = l.op; this->Type = NodeType::LogOp; }
-    LogOp(Operator op){ this->op = op; this->Type = NodeType::LogOp; }
+    Link(){}
+    std::wstring GetName() { return name; }
+    void SetName(std::wstring n) { name = n; }
+    Link(const Link& ln) { name = ln.name; Type = NodeType::Link; }
+    Link(std::wstring nm) { name = nm; Type = NodeType::Link; }
 };
 
+class Goto : public Stat{
+    std::wstring link;
+public:
+    Goto(){}
+    std::wstring GetLink() { return link; }
+    void SetLink(std::wstring n) { link = n; }
+    Goto(const Goto& gt) { link = gt.link; Type = NodeType::Goto; }
+    Goto(std::wstring ln) { link = ln; Type = NodeType::Goto; }
+};
+
+
+
 class IfElse : public Stat {       // конструкция блока if
-    std::vector<Expr*> Cond;
+    Expr* Cond;
     Block* IfBlock;
     Block* ElseBlock;
 public:
-    void AddCond(Expr* e) { Cond.push_back(e); }
-    std::vector<Expr*> GetCond(){ return Cond; }
+    Expr* GetCond(){ return Cond; }
     Block* GetIfBlock() { return IfBlock; }
     Block* GetElseBlock() { return ElseBlock; }
     IfElse (){ this->Type = NodeType::If; }
-    IfElse (std::vector<Expr*> e,Block* s1, Block* s2) { Cond = e; IfBlock = s1; ElseBlock = s2; this->Type = NodeType::IfElse; }
+    IfElse (Expr* e, Block* s1, Block* s2) { Cond = e; IfBlock = s1; ElseBlock = s2; this->Type = NodeType::IfElse; }
 };
 
 

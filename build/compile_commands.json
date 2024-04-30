@@ -1,0 +1,20 @@
+[
+{
+  "directory": "C:/Users/User/Desktop/Markov_algorithm_compiler/build",
+  "command": "C:\\mingw64\\bin\\g++.exe   -g -std=c++11 -o CMakeFiles\\Compiler.dir\\Parser.cpp.obj -c C:\\Users\\User\\Desktop\\Markov_algorithm_compiler\\Parser.cpp",
+  "file": "C:/Users/User/Desktop/Markov_algorithm_compiler/Parser.cpp",
+  "output": "CMakeFiles/Compiler.dir/Parser.cpp.obj"
+},
+{
+  "directory": "C:/Users/User/Desktop/Markov_algorithm_compiler/build",
+  "command": "C:\\mingw64\\bin\\g++.exe   -g -std=c++11 -o CMakeFiles\\Compiler.dir\\Scanner.cpp.obj -c C:\\Users\\User\\Desktop\\Markov_algorithm_compiler\\Scanner.cpp",
+  "file": "C:/Users/User/Desktop/Markov_algorithm_compiler/Scanner.cpp",
+  "output": "CMakeFiles/Compiler.dir/Scanner.cpp.obj"
+},
+{
+  "directory": "C:/Users/User/Desktop/Markov_algorithm_compiler/build",
+  "command": "C:\\mingw64\\bin\\g++.exe   -g -std=c++11 -o CMakeFiles\\Compiler.dir\\main.cpp.obj -c C:\\Users\\User\\Desktop\\Markov_algorithm_compiler\\main.cpp",
+  "file": "C:/Users/User/Desktop/Markov_algorithm_compiler/main.cpp",
+  "output": "CMakeFiles/Compiler.dir/main.cpp.obj"
+}
+]

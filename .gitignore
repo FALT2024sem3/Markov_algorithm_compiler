@@ -8,4 +8,7 @@
 *bin
 
 # CMake
+*CMakeFiles
 *build
+CMakeCache.txt
+CMakeLists.txt.user

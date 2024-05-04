@@ -2,9 +2,9 @@
 #include <wchar.h>
 #include "Parser.h"
 #include "Scanner.h"
-#include "AST.h"
 #include <string>
 #include <vector>
+#include "get_AST.h"
 
 void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход нашего дерева
         std::wcout<<"{"<<std::endl;
@@ -39,7 +39,7 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
         std::wcout<<"}"<<std::endl;
 
 };
- 
+
 main(int argc, char *argv[])
 {
         if (argc == 2)
@@ -51,7 +51,12 @@ main(int argc, char *argv[])
                 Parser *parser   = new Parser(scanner);
                 parser->Parse();
 
-                TreeTraversal(ParseTree::AST::Root.Getstats());
+                // QStandardItemModel model;
+                //QStandardItem *parent_item = model.invisibleRootItem();
+
+                //get_AST(ParseTree::AST::Root.Getstats(), parent_item);
+                //printItems(parent_item, 0);
+                std::cout << "End of the main";
  
                 delete parser;
                 delete scanner;

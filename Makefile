@@ -1,3 +1,5 @@
+include QApplication
+
 all: translator
 
  translator: Coco scanner.o parser.o main.o

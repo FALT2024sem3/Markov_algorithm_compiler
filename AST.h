@@ -26,6 +26,8 @@ class Expr : public Node{};
 class SinglExpr : public Expr{ // для выражений вида: ?"abc" или !?"abc", используемых в if 
     Operator op;
     std::wstring e;
+
+    const char* getMsg() override { return "Single Expresion"; }
 public:
     std::wstring GetExpr(){ return e; }
     Operator GetOp(){ return op; }
@@ -38,7 +40,7 @@ public:
 //---------------------Statements--------------------//
 
 class Stat : public Node{
-    virtual const char* getMsg() { return "StatClass"; }
+    virtual const char* getMsg() override { return "StatClass"; }
 };
 
 class BinExpr : public Stat{   // для выражений вида: "abc"->"def", по сути это наши замены
@@ -46,6 +48,8 @@ private:
     Operator op;
     std::wstring left;
     std::wstring right;
+
+    const char* getMsg() override { return "Binary Expresion"; }
 public:
     BinExpr(){}
     BinExpr(std::wstring f1, Operator o, std::wstring f2) { op = o; left = f1; right = f2; this->Type = NodeType::BinExpr;}
@@ -58,6 +62,8 @@ public:
 
 class Block : public Stat {    // блок, который хранит все остальный конструкции
     std::vector<Stat*> stats;
+
+    const char* getMsg() override { return "Block"; }
 public:
     std::vector<Stat*> Getstats(){ return stats; }
     Block(){ this->Type = NodeType::Block;}
@@ -68,6 +74,8 @@ public:
 
 class LogOp : public Expr{
     Operator op;
+
+    const char* getMsg() override { return "Logic Operator"; }
 public:
     Operator GetLogOp() { return op; }
 
@@ -80,6 +88,8 @@ class IfElse : public Stat {       // конструкция блока if
     std::vector<Expr*> Cond;
     Block* IfBlock;
     Block* ElseBlock;
+
+    const char* getMsg() override { return "If Else"; }
 public:
     void AddCond(Expr* e) { Cond.push_back(e); }
     std::vector<Expr*> GetCond(){ return Cond; }

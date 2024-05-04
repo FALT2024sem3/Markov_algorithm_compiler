@@ -9,11 +9,9 @@
 #include <vector>
 #include "AST.h"
 
-
 void printItems(const QStandardItem *, int);
-void logop_handle(const std::vector<ParseTree::Expr*> &, QStandardItem *, std::wstring, std::wstring);
-void pin_cond_to_QSIM(const std::vector<ParseTree::Expr*> &, QStandardItem *, std::wstring);
+void wstring_to_AST(std::wstring, QStandardItem *);
+void cond_to_QSIM(ParseTree::Expr *, QStandardItem *);
 void get_AST(const std::vector<ParseTree::Stat *> &, QStandardItem *);
-
 
 #endif // GET_AST_H

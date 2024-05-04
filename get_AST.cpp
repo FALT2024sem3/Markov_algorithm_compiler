@@ -17,41 +17,40 @@
 //     }
 // }
 
-// void logop_handle(const std::vector<ParseTree::Expr*> &expr, QStandardItem *parent_item, std::wstring flag, std::wstring word)
-// {
-//     std::vector<std::wstring> words;
-//     for (size_t i = 0; i < expr.size(); i++) {
-//         ParseTree::SinglExpr *curr = dynamic_cast<ParseTree::SinglExpr *>(expr[i]);
-//         words.push_back(curr->GetExpr());
-//     }
-//     auto is_exist = std::find(words.begin(), words.end(), word);
-//     if (is_exist != words.end()) {
-//         std::vector<ParseTree::Expr*> ord1(expr.begin(), is_exist);
-//         std::vector<ParseTree::Expr*> ord2(is_exist + 1, expr.end());
-//         if (flag != word) {
-//             QString qtString_word = QString::fromWCharArray( word.c_str() );
-//             QStandardItem *is_item = new QStandardItem(qtString_word);
-//             parent_item->appendRow(is_item);
-//             flag = word;
-//         }
-//         pin_cond_to_QSIM(ord1, parent_item, flag);
-//         pin_cond_to_QSIM(ord2, parent_item, flag);
-//     }
-// }
+void wstring_to_AST(std::wstring wstr, QStandardItem *parent_item)
+{
+    QString qtString = QString::fromWCharArray(wstr.c_str());
+    QStandardItem *item = new QStandardItem(qtString);
+    parent_item->appendRow(item);
+}
 
-// void pin_cond_to_QSIM(const std::vector<ParseTree::Expr*> &expr, QStandardItem *parent_item, std::wstring flag) {
-//     logop_handle(expr, parent_item, flag, "or");
-//     logop_handle(expr, parent_item, flag, "and");
-//     logop_handle(expr, parent_item, flag, "not");
-
-//     for (size_t i = 0; i < expr.size(); i++) {
-//         ParseTree::SinglExpr *elem = dynamic_cast<ParseTree::SinglExpr *>(expr[i]);
-//         std::wstring value = elem->GetExpr();
-//         QString qtString_value = QString::fromWCharArray( value.c_str() );
-//         QStandardItem *value_item = new QStandardItem(qtString_value);
-//         parent_item->appendRow(value_item);
-//     }
-// };
+void cond_to_QSIM(ParseTree::Expr *root, QStandardItem *parent_item)
+{
+    if (root->Type == ParseTree::NodeType::SinglExpr)
+    {
+        std::wstring expr = dynamic_cast<ParseTree::SinglExpr *>(root)->GetExpr();
+        wstring_to_AST(expr, parent_item);
+    }
+    else if (root->Type == ParseTree::NodeType::BinLogOp)
+    {
+        ParseTree::BinLogOp *bin_logop = dynamic_cast<ParseTree::BinLogOp *>(root);
+        QStandardItem *bin_logop_item;
+        if (bin_logop->GetTypeLogOp() == ParseTree::TypeOfLogicOp::AND)
+            bin_logop_item = new QStandardItem("And");
+        else if (bin_logop->GetTypeLogOp() == ParseTree::TypeOfLogicOp::OR)
+            bin_logop_item = new QStandardItem("Or");
+        parent_item->appendRow(bin_logop_item);
+        cond_to_QSIM(bin_logop->GetLeftOp(), bin_logop_item);
+        cond_to_QSIM(bin_logop->GetRighttOp(), bin_logop_item);
+    }
+    else if (root->Type == ParseTree::NodeType::SinglLogOp)
+    {
+        ParseTree::SinglLogOp *singl_expr = dynamic_cast<ParseTree::SinglLogOp *>(root);
+        QStandardItem *singl_expr_item = new QStandardItem("Not");
+        parent_item->appendRow(singl_expr_item);
+        cond_to_QSIM(singl_expr->GetOp(), singl_expr_item);
+    }
+}
 
 void get_AST(const std::vector<ParseTree::Stat *> &st, QStandardItem *parent_item)
 { // обход нашего дерева
@@ -65,13 +64,10 @@ void get_AST(const std::vector<ParseTree::Stat *> &st, QStandardItem *parent_ite
             parent_item->appendRow(bin_expr);
 
             std::wstring left_value = elem->GetLeftExpr();
-            QString qtString_left_value = QString::fromWCharArray( left_value.c_str() );
+            wstring_to_AST(left_value, parent_item);
+
             std::wstring right_value = elem->GetRightExpr();
-            QString qtString_right_value = QString::fromWCharArray( right_value.c_str() );
-            QStandardItem *left = new QStandardItem(qtString_left_value);
-            QStandardItem *right = new QStandardItem(qtString_right_value);
-            bin_expr->appendRow(left);
-            bin_expr->appendRow(right);
+            wstring_to_AST(right_value, parent_item);
         }
         else if (st[i]->Type == ParseTree::NodeType::Block)
         { // вывод блока
@@ -87,12 +83,11 @@ void get_AST(const std::vector<ParseTree::Stat *> &st, QStandardItem *parent_ite
             QStandardItem *if_else_item = new QStandardItem("If Else");
             parent_item->appendRow(if_else_item);
 
-            // Пока что не рабочий прототип
             // вывод условия if
-            // std::vector<ParseTree::Expr *> conds = ifelse->GetCond();
-            // QStandardItem *cond = new QStandardItem("Condition");
-            // if_else_item->appendRow(cond);
-            // pin_cond_to_QSIM(conds, cond, "");
+            ParseTree::Expr *cond_expr = ifelse->GetCond();
+            QStandardItem *cond_item = new QStandardItem("Condition");
+            if_else_item->appendRow(cond_item);
+            cond_to_QSIM(cond_expr, cond_item);
 
             // вывод внутренностей if
             ParseTree::Block *if_block = ifelse->GetIfBlock();
@@ -102,9 +97,12 @@ void get_AST(const std::vector<ParseTree::Stat *> &st, QStandardItem *parent_ite
 
             // вывод внустренностей else
             ParseTree::Block *else_block = ifelse->GetElseBlock();
-            QStandardItem *else_block_expr = new QStandardItem("Do else");
-            if_else_item->appendRow(else_block_expr);
-            get_AST(else_block->Getstats(), else_block_expr);
+            if (!else_block->Getstats().empty())
+            {
+                QStandardItem *else_block_expr = new QStandardItem("Do else");
+                if_else_item->appendRow(else_block_expr);
+                get_AST(else_block->Getstats(), else_block_expr);
+            }
         }
     }
 };

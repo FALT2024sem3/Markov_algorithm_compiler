@@ -10,9 +10,9 @@
 namespace ParseTree
 {
 
-enum class Operator{ SUB, EXIST, NOT, AND, OR };
+enum class Operator{ SUB };
 enum class NodeType{ BinExpr, SinglExpr, Block, If, IfElse, BinLogOp, SinglLogOp ,Link, Goto };
-enum class TypeOfLogicOp{ AND, OR };
+enum class TypeOfLogicOp{ AND, OR, NOT };
 
 class Node{                    // базовый класс, от которого наследуются все остальные
     virtual const char* getMsg() { return "ParentClass"; }
@@ -24,34 +24,33 @@ public:
 
 class Expr : public Node{};
 
-class SinglExpr : public Expr{ // для выражений вида: ?"abc" или !?"abc", используемых в if 
-    Operator op;
+class SinglExpr : public Expr{ // для выражений вида: "abc" или "abc", используемых в if 
     std::wstring e;
 public:
     std::wstring GetExpr(){ return e; }
-    Operator GetOp(){ return op; }
     SinglExpr(){}
-    SinglExpr(const SinglExpr& s) { op = s.op; e = s.e ; this->Type = NodeType::SinglExpr;}
-    SinglExpr (Operator x, std::wstring y) { op = x; e = y; this->Type = NodeType::SinglExpr;}
+    SinglExpr(const SinglExpr& s) { e = s.e ; this->Type = NodeType::SinglExpr;}
+    SinglExpr (std::wstring y) { e = y; this->Type = NodeType::SinglExpr;}
 };
 
-class BinLogOp : public Expr{
+class BinLogOp : public Expr{ // для or и and
     Expr* LeftOp;
     Expr* RigthOp;
-    Operator LogType;
+    TypeOfLogicOp LogType;
 public:
     Expr* GetLeftOp(){ return this->LeftOp; }
     Expr* GetRighttOp(){ return this->RigthOp; }
-    Operator GetTypeLogOp () { return LogType; }
+    TypeOfLogicOp GetTypeLogOp () { return LogType; }
     BinLogOp(){}
-    BinLogOp(Expr *l, Expr *r, Operator tp){ this->LeftOp = l; this->RigthOp = r; this->LogType = tp; this->Type = NodeType::BinLogOp;}
+    BinLogOp(Expr *l,TypeOfLogicOp tp, Expr *r){ this->LeftOp = l; this->RigthOp = r; this->LogType = tp; this->Type = NodeType::BinLogOp;}
 };
 
-class SinglLogOp : public Expr{
+class SinglLogOp : public Expr{ // для not
     Expr* Op;
     TypeOfLogicOp LogType;
 public:
     Expr* GetOp(){ return this->Op; }
+    TypeOfLogicOp GetTypeLogOp () { return LogType; }
     SinglLogOp(){}
     SinglLogOp(Expr *o, TypeOfLogicOp tp){ this->Op = o; this->LogType = tp; this->Type = NodeType::SinglLogOp;}
 };
@@ -124,6 +123,7 @@ class AST{                     // класс для работы с нашим A
 public:
     inline static Block Root;    
 };
+
 } // namespace ParseTree
 
 #endif

@@ -6,6 +6,34 @@
 #include <string>
 #include <vector>
 
+// #define GETONLYROOT
+
+void Condition_Tree_Traversal(ParseTree::Expr* root){// функция обхода дерева условия
+        if (root->Type == ParseTree::NodeType::SinglExpr){
+                std::wcout << dynamic_cast<ParseTree::SinglExpr*>(root)->GetExpr() << ' ';
+        }
+        if (root->Type == ParseTree::NodeType::BinLogOp){
+                ParseTree::BinLogOp* BinEx = dynamic_cast<ParseTree::BinLogOp*>(root);
+                #ifndef GETONLYROOT        
+                Condition_Tree_Traversal(BinEx->GetLeftOp());
+                #endif
+                if (BinEx->GetTypeLogOp() == ParseTree::TypeOfLogicOp::AND)
+                        std::wcout << "AND" << ' ';
+                if (BinEx->GetTypeLogOp() == ParseTree::TypeOfLogicOp::OR)
+                        std::wcout << "OR" << ' ';
+                #ifndef GETONLYROOT        
+                Condition_Tree_Traversal(BinEx->GetRighttOp());
+                #endif
+        }
+        if (root->Type == ParseTree::NodeType::SinglLogOp){
+                ParseTree::SinglLogOp* SinglEx = dynamic_cast<ParseTree::SinglLogOp*>(root);
+                std::wcout << "!" << ' ';
+                #ifndef GETONLYROOT        
+                Condition_Tree_Traversal(SinglEx->GetOp());
+                #endif
+        }
+}
+
 void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход нашего дерева
         std::wcout<<"{"<<std::endl;
         
@@ -24,27 +52,13 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
                         std::wcout<<"GOTO: "<<(dynamic_cast<ParseTree::Goto*>(st[i]))->GetLink()<<std::endl;
                 }
                 if (st[i]->Type == ParseTree::NodeType::IfElse){      // вывод конструкции ifelse
-                        std::cout<<(dynamic_cast<ParseTree::IfElse*>(st[i]))->GetCond().size()<<std::endl;
                         std::cout<<"IF"<<std::endl;
-                        std::vector<ParseTree::Expr*> vec = (dynamic_cast<ParseTree::IfElse*>(st[i]))->GetCond();
+                        ParseTree::Expr* Condition = (dynamic_cast<ParseTree::IfElse*>(st[i]))->GetCond();
 
-                        for (auto i : vec){
-                                if (i->Type == ParseTree::NodeType::SinglExpr){
-                                        if ((dynamic_cast<ParseTree::SinglExpr*>(i))->GetOp() == ParseTree::Operator::NOT)
-                                                std::wcout << "not ";                
-                                        std::wcout<<(dynamic_cast<ParseTree::SinglExpr*>(i))->GetExpr()<<" ";
-                                }
-                                if (i->Type == ParseTree::NodeType::BinLogOp){
+                        Condition_Tree_Traversal(Condition); // обход дерева условия
 
-                                        if ((dynamic_cast<ParseTree::BinLogOp*>(i))->GetTypeLogOp() == ParseTree::Operator::AND)
-                                                std::wcout<<"AND"<<' ';
-                                        if ((dynamic_cast<ParseTree::BinLogOp*>(i))->GetTypeLogOp() == ParseTree::Operator::OR)
-                                                std::wcout<<"OR"<<' ';
-                                }
-                        }
-
-                        TreeTraversal((dynamic_cast<ParseTree::IfElse*>(st[i]))->GetIfBlock()->Getstats());
-                        TreeTraversal((dynamic_cast<ParseTree::IfElse*>(st[i]))->GetElseBlock()->Getstats());
+                        TreeTraversal((dynamic_cast<ParseTree::IfElse*>(st[i]))->GetIfBlock()->Getstats()); // обход блока if
+                        TreeTraversal((dynamic_cast<ParseTree::IfElse*>(st[i]))->GetElseBlock()->Getstats()); // обход блока else
 
                         std::cout<<"ENDIF"<<std::endl;
                 }

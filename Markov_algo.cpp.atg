@@ -39,7 +39,7 @@ PRODUCTIONS
                                                           std::vector<ParseTree::Expr*> se;
                                                           ParseTree::Block* bl = new ParseTree::Block();
                                                           ParseTree::Block* bl2 = new ParseTree::Block(); 
-                                                          ParseTree::IfElse IF;
+                                                          ParseTree::Expr* ConditionIf;
                                                           ParseTree::Link link;
                                                           ParseTree::Goto Gt;
                                                           .) 
@@ -48,9 +48,9 @@ PRODUCTIONS
                                 | Term<b> (. 
                                   ss = dynamic_cast<ParseTree::Stat*>(b);
                                   .)
-                         //       | "if" "(" Condition<IF> ")" Block<*bl> ["else" Block<*bl2>](.
-                           //       ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(IF.GetCond(), bl, bl2)); 
-                             //     .)                           
+                                | "if" "(" Condition<ConditionIf> ")" Block<*bl> ["else" Block<*bl2>](.
+                                 ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(ConditionIf, bl, bl2)); 
+                                 .)                           
                                 | Link<link>(.
                                   ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link)); 
                                   .)                           
@@ -60,31 +60,36 @@ PRODUCTIONS
                                 ) (.
                                   B.add(ss);
                                   .).
+// Обработка условия If и построение дерева условия
 
-Condition <ParseTree::IfElse& conds> = (.
-                                              ParseTree::Expr *ss, *opPtr;
-                                              ParseTree::SinglExpr se1, se2;
-                                              ParseTree::LogOp op;
-                                            .)
-                                            SinglExpr<se1>(.
-                                            ss = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(se1)); 
-                                            conds.AddCond(ss);
-                                            .)         
-                                            { (Or (. op = ParseTree::Operator::OR; .)
-                                            | And (. op = ParseTree::Operator::AND; .) ) SinglExpr<se2>
-                                            (. 
-                                                opPtr = dynamic_cast<ParseTree::Expr*>(new ParseTree::LogOp(op));
-                                                conds.AddCond(opPtr);
-                                                ss = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(se2)); 
-                                                conds.AddCond(ss);
-                                             .)
-                                            }.
+Condition<ParseTree::Expr*& Cond> =   expression<Cond>.
 
-SinglExpr <ParseTree::SinglExpr& se>    = (.
-                                            std::wstring s;
-                                            ParseTree::Operator op = ParseTree::Operator::EXIST; 
-                                          .) 
-                                        [Not(. op = ParseTree::Operator::NOT; .)] Word<s> (. se = ParseTree::SinglExpr(op, s); .).
+expression<ParseTree::Expr*& EXPR> = 
+                                      (. ParseTree::Expr* s1; .) TermOfIf<s1> {
+                                      (. ParseTree::Expr* s2; .) "and" expression<s2>
+                                      (. s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::AND, s2));.)
+                                      } (. EXPR = s1; .) .
+                                
+
+TermOfIf<ParseTree::Expr*& TR> =
+                                      (. ParseTree::Expr* s1; .) Secondary_expression<s1> {
+                                      (. ParseTree::Expr* s2; .) "or" Secondary_expression<s2>
+                                      (. s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::OR, s2)); .)
+                                      } (. TR = s1;  .) .
+
+Secondary_expression<ParseTree::Expr*& SE> = 
+                                      (. ParseTree::Expr* s; .) 
+                                      ("!" Primary_expression<s> (. s = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglLogOp(s, ParseTree::TypeOfLogicOp::NOT)); .)
+                                      | Primary_expression<s>) (. SE = s; .) .
+
+
+Primary_expression<ParseTree::Expr*& PE> = 
+                                      (. ParseTree::Expr* s; .) ('(' expression<s> ')'
+                                      | Unury<s>) (. PE = s; .) .
+
+Unury<ParseTree::Expr*& SE> =         (.std::wstring str;.) Word<str> (. SE = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(str)); .).
+
+// конец обработки If
 
 Link<ParseTree::Link& link>  = (. std::wstring s; .) 
                                   Ident<s> ":" (. link.SetName(s); .).
@@ -101,9 +106,6 @@ Term <ParseTree::BinExpr*& b> = (.
                                   .).
 
 GOTO  = "goto".
-Not   = "not".
-Or    = "or".
-And   = "and".
 SubOp = "->".
 
 Ident<std::wstring &str>     = ident (. str=t->val; .).

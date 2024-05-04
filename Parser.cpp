@@ -81,7 +81,7 @@ void Parser::Stat(ParseTree::Stat*& s, ParseTree::Block& B) {
 		std::vector<ParseTree::Expr*> se;
 		ParseTree::Block* bl = new ParseTree::Block();
 		ParseTree::Block* bl2 = new ParseTree::Block(); 
-		ParseTree::IfElse IF;
+		ParseTree::Expr* ConditionIf;
 		ParseTree::Link link;
 		ParseTree::Goto Gt;
 		
@@ -96,20 +96,20 @@ void Parser::Stat(ParseTree::Stat*& s, ParseTree::Block& B) {
 		} else if (la->kind == 6 /* "if" */) {
 			Get();
 			Expect(7 /* "(" */);
-			Condition(IF);
+			Condition(ConditionIf);
 			Expect(8 /* ")" */);
 			Block(*bl);
 			if (la->kind == 9 /* "else" */) {
 				Get();
 				Block(*bl2);
 			}
-			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(IF.GetCond(), bl, bl2)); 
+			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(ConditionIf, bl, bl2)); 
 			
 		} else if (la->kind == _ident) {
 			Link(link);
 			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link)); 
 			
-		} else if (la->kind == 12 /* "goto" */) {
+		} else if (la->kind == 15 /* "goto" */) {
 			Goto(Gt);
 			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt)); 
 			
@@ -124,41 +124,19 @@ void Parser::Term(ParseTree::BinExpr*& b) {
 		Word(s1);
 		SubOp();
 		Word(s2);
-		Expect(11 /* ";" */);
+		Expect(14 /* ";" */);
 		b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
 		
 }
 
-void Parser::Condition(ParseTree::IfElse& conds) {
-		ParseTree::Expr *ss, *opPtr;
-		ParseTree::SinglExpr se1, se2;
-		ParseTree::LogOp op;
-		
-		SinglExpr(se1);
-		ss = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(se1)); 
-		conds.AddCond(ss);
-		
-		while (la->kind == 14 /* "or" */ || la->kind == 15 /* "and" */) {
-			if (la->kind == 14 /* "or" */) {
-				Or();
-				op = ParseTree::Operator::OR; 
-			} else {
-				And();
-				op = ParseTree::Operator::AND; 
-			}
-			SinglExpr(se2);
-			opPtr = dynamic_cast<ParseTree::Expr*>(new ParseTree::LogOp(op));
-			conds.AddCond(opPtr);
-			ss = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(se2)); 
-			conds.AddCond(ss);
-			
-		}
+void Parser::Condition(ParseTree::Expr*& Cond) {
+		expression(Cond);
 }
 
 void Parser::Link(ParseTree::Link& link) {
 		std::wstring s; 
 		Ident(s);
-		Expect(10 /* ":" */);
+		Expect(13 /* ":" */);
 		link.SetName(s); 
 }
 
@@ -166,32 +144,62 @@ void Parser::Goto(ParseTree::Goto& Gt) {
 		std::wstring s; 
 		GOTO();
 		Ident(s);
-		Expect(11 /* ";" */);
+		Expect(14 /* ";" */);
 		Gt.SetLink(s); 
 }
 
-void Parser::SinglExpr(ParseTree::SinglExpr& se) {
-		std::wstring s;
-		ParseTree::Operator op = ParseTree::Operator::EXIST; 
-		
-		if (la->kind == 13 /* "not" */) {
-			Not();
-			op = ParseTree::Operator::NOT; 
+void Parser::expression(ParseTree::Expr*& EXPR) {
+		ParseTree::Expr* s1; 
+		TermOfIf(s1);
+		while (la->kind == 10 /* "and" */) {
+			ParseTree::Expr* s2; 
+			Get();
+			expression(s2);
+			s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::AND, s2));
 		}
-		Word(s);
-		se = ParseTree::SinglExpr(op, s); 
+		EXPR = s1; 
 }
 
-void Parser::Or() {
-		Expect(14 /* "or" */);
+void Parser::TermOfIf(ParseTree::Expr*& TR) {
+		ParseTree::Expr* s1; 
+		Secondary_expression(s1);
+		while (la->kind == 11 /* "or" */) {
+			ParseTree::Expr* s2; 
+			Get();
+			Secondary_expression(s2);
+			s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::OR, s2)); 
+		}
+		TR = s1;  
 }
 
-void Parser::And() {
-		Expect(15 /* "and" */);
+void Parser::Secondary_expression(ParseTree::Expr*& SE) {
+		ParseTree::Expr* s; 
+		if (la->kind == 12 /* "!" */) {
+			Get();
+			Primary_expression(s);
+			s = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglLogOp(s, ParseTree::TypeOfLogicOp::NOT)); 
+		} else if (la->kind == _string || la->kind == 7 /* "(" */) {
+			Primary_expression(s);
+		} else SynErr(19);
+		SE = s; 
 }
 
-void Parser::Not() {
-		Expect(13 /* "not" */);
+void Parser::Primary_expression(ParseTree::Expr*& PE) {
+		ParseTree::Expr* s; 
+		if (la->kind == 7 /* "(" */) {
+			Get();
+			expression(s);
+			Expect(8 /* ")" */);
+		} else if (la->kind == _string) {
+			Unury(s);
+		} else SynErr(20);
+		PE = s; 
+}
+
+void Parser::Unury(ParseTree::Expr*& SE) {
+		std::wstring str;
+		Word(str);
+		SE = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(str)); 
 }
 
 void Parser::Word(std::wstring &str) {
@@ -205,7 +213,7 @@ void Parser::Ident(std::wstring &str) {
 }
 
 void Parser::GOTO() {
-		Expect(12 /* "goto" */);
+		Expect(15 /* "goto" */);
 }
 
 void Parser::SubOp() {
@@ -330,7 +338,7 @@ bool Parser::StartOf(int s) {
 
 	static bool set[2][19] = {
 		{T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{x,T,T,x, T,x,T,x, x,x,x,x, T,x,x,x, x,x,x}
+		{x,T,T,x, T,x,T,x, x,x,x,x, x,x,x,T, x,x,x}
 	};
 
 
@@ -361,15 +369,17 @@ void Errors::SynErr(int line, int col, int n) {
 			case 7: s = coco_string_create(L"\"(\" expected"); break;
 			case 8: s = coco_string_create(L"\")\" expected"); break;
 			case 9: s = coco_string_create(L"\"else\" expected"); break;
-			case 10: s = coco_string_create(L"\":\" expected"); break;
-			case 11: s = coco_string_create(L"\";\" expected"); break;
-			case 12: s = coco_string_create(L"\"goto\" expected"); break;
-			case 13: s = coco_string_create(L"\"not\" expected"); break;
-			case 14: s = coco_string_create(L"\"or\" expected"); break;
-			case 15: s = coco_string_create(L"\"and\" expected"); break;
+			case 10: s = coco_string_create(L"\"and\" expected"); break;
+			case 11: s = coco_string_create(L"\"or\" expected"); break;
+			case 12: s = coco_string_create(L"\"!\" expected"); break;
+			case 13: s = coco_string_create(L"\":\" expected"); break;
+			case 14: s = coco_string_create(L"\";\" expected"); break;
+			case 15: s = coco_string_create(L"\"goto\" expected"); break;
 			case 16: s = coco_string_create(L"\"->\" expected"); break;
 			case 17: s = coco_string_create(L"??? expected"); break;
 			case 18: s = coco_string_create(L"invalid Stat"); break;
+			case 19: s = coco_string_create(L"invalid Secondary_expression"); break;
+			case 20: s = coco_string_create(L"invalid Primary_expression"); break;
 
 		default:
 		{

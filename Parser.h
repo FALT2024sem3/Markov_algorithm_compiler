@@ -65,12 +65,17 @@ public:
 	void Block(ParseTree::Block& B);
 	void Stat(ParseTree::Stat*& s, ParseTree::Block& B);
 	void Term(ParseTree::BinExpr*& b);
-	void Condition(ParseTree::IfElse& conds);
-	void SinglExpr(ParseTree::SinglExpr& se);
-	void Or();
-	void And();
-	void Not();
+	void Condition(ParseTree::Expr*& Cond);
+	void Link(ParseTree::Link& link);
+	void Goto(ParseTree::Goto& Gt);
+	void expression(ParseTree::Expr*& EXPR);
+	void TermOfIf(ParseTree::Expr*& TR);
+	void Secondary_expression(ParseTree::Expr*& SE);
+	void Primary_expression(ParseTree::Expr*& PE);
+	void Unury(ParseTree::Expr*& SE);
 	void Word(std::wstring &str);
+	void Ident(std::wstring &str);
+	void GOTO();
 	void SubOp();
 
 	void Parse();

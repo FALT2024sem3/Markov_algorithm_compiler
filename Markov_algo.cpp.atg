@@ -66,7 +66,7 @@ Condition<ParseTree::Expr*& Cond> =   expression<Cond>.
 
 expression<ParseTree::Expr*& EXPR> = 
                                       (. ParseTree::Expr* s1; .) TermOfIf<s1> {
-                                      (. ParseTree::Expr* s2; .) "and" expression<s2>
+                                      (. ParseTree::Expr* s2; .) "and" TermOfIf<s2>
                                       (. s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::AND, s2));.)
                                       } (. EXPR = s1; .) .
                                 

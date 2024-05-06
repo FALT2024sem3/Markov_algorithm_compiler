@@ -154,7 +154,7 @@ void Parser::expression(ParseTree::Expr*& EXPR) {
 		while (la->kind == 10 /* "and" */) {
 			ParseTree::Expr* s2; 
 			Get();
-			expression(s2);
+			TermOfIf(s2);
 			s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::AND, s2));
 		}
 		EXPR = s1; 

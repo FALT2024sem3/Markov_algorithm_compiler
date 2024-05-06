@@ -4,7 +4,7 @@ link:
     "d"->"o";
     {
     "c"->"t";
-    if ("a" and "s" or !"w") {
+    if ("a" or "s" and !"w") {
         "o"->"p";
     }
     else{

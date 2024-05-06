@@ -63,9 +63,9 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
 
 };
 
-void tree_creation(){
-        wchar_t *string_pointer;
-        wchar_t string[20] = L"MARKOV.IN";
+void tree_creation(wchar_t string[20]){
+        // wchar_t *string_pointer;
+        // wchar_t string[20] = L"MARKOV.IN";
         wchar_t *file  = string;
 
         Scanner *scanner = new Scanner(file);

@@ -12,6 +12,9 @@
 
 
 #include "Scanner.h"
+#include <locale>
+#include <codecvt>
+#include <string>
 
 
 

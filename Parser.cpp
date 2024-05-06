@@ -389,8 +389,10 @@ void Errors::SynErr(int line, int col, int n) {
 		}
 		break;
 	}
-	wprintf(L"-- line %d col %d: %ls\n", line, col, s);
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::string narrow = converter.to_bytes(s);
 	coco_string_delete(s);
+	throw (std::runtime_error(narrow));
 	count++;
 }
 

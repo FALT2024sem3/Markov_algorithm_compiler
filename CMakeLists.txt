@@ -8,7 +8,7 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_PREFIX_PATH "C:/msys64/mingw64/bin/clang.exe")
+# set(CMAKE_PREFIX_PATH "C:/msys64/mingw64/bin/clang.exe")
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
@@ -16,7 +16,7 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Gui)
 #find_package(CoCo REQUIRED)
 
-include_directories(${CoCo_INCLUDE_DIRS})
+# include_directories(${CoCo_INCLUDE_DIRS})
 
 add_executable(test
   get_AST.h

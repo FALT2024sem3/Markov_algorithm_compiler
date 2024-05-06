@@ -12,3 +12,9 @@
 *build
 CMakeCache.txt
 CMakeLists.txt.user
+
+# Coco/R
+Parser.h
+Parser.cpp
+Scanner.h
+Scanner.cpp

@@ -1,6 +1,6 @@
-#include "Parser.h"
-#include "Scanner.h"
-#include "AST.h"
+#include "syntax_tree/Parser.h"
+#include "syntax_tree/Scanner.h"
+#include "syntax_tree/AST.h"
 
 // #define GETONLYROOT
 

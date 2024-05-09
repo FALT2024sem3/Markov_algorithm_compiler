@@ -43,6 +43,7 @@ private:
 	Token *dummyToken;
 	int errDist;
 	int minErrDist;
+	ParseTree::AST* root;
 
 	void SynErr(int n);
 	void Get();
@@ -60,7 +61,8 @@ public:
 
 
 
-	Parser(Scanner *scanner);
+    ParseTree::AST* GetASTRoot();
+	Parser(Scanner *scanner, ParseTree::AST* a);
 	~Parser();
 	void SemErr(const wchar_t* msg);
 

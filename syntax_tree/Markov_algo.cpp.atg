@@ -29,7 +29,7 @@ IGNORE cr + lf + tab
  
 PRODUCTIONS
   
-  Root                                               = "DAFE" Block<ParseTree::AST::Root> .
+  Root                                               = "DAFE" Block<*((*(Parser::GetASTRoot())).GetRoot())> .
 
   Block <ParseTree::Block& B>                        = (. ParseTree::Stat* s; .) "{" {Stat<s, B>} "}".
 
@@ -52,16 +52,24 @@ PRODUCTIONS
                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(ConditionIf, bl, bl2)); 
                                  .)                           
                                 | Link<link>(.
-                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link)); 
+                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link));
+                                  (*(Parser::GetASTRoot())).SetNewLink(link.GetName());
                                   .)                           
                                 | Goto<Gt>(.
-                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt)); 
+                                  auto it = (*(Parser::GetASTRoot())).GetTableOfLink().find(Gt.GetLink());
+                                  if (it == (*(Parser::GetASTRoot())).GetTableOfLink().end()) {
+                                        std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+                                        std::string narrow = converter.to_bytes(Gt.GetLink());
+                                        std::string str = "Unknown link " + narrow;
+                                      	throw (std::runtime_error(str));
+                                  }
+                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt));
                                   .)                           
                                 ) (.
                                   B.add(ss);
                                   .).
-// Обработка условия If и построение дерева условия
 
+// Обработка условия If и построение дерева условия
 Condition<ParseTree::Expr*& Cond> =   expression<Cond>.
 
 expression<ParseTree::Expr*& EXPR> = 
@@ -88,15 +96,17 @@ Primary_expression<ParseTree::Expr*& PE> =
                                       | Unury<s>) (. PE = s; .) .
 
 Unury<ParseTree::Expr*& SE> =         (.std::wstring str;.) Word<str> (. SE = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(str)); .).
-
 // конец обработки If
 
+// метки для прыжков
 Link<ParseTree::Link& link>  = (. std::wstring s; .) 
                                   Ident<s> ":" (. link.SetName(s); .).
 
+// прыжки goto
 Goto<ParseTree::Goto& Gt>  =  (. std::wstring s; .) 
                                     GOTO Ident<s> ";" (. Gt.SetLink(s); .).
 
+// замены
 Term <ParseTree::BinExpr*& b> = (. 
                                    std::wstring s1, s2;
                                  .)
@@ -108,8 +118,10 @@ Term <ParseTree::BinExpr*& b> = (.
 GOTO  = "goto".
 SubOp = "->".
 
+// идентификатор
 Ident<std::wstring &str>     = ident (. str=t->val; .).
 
+// слово 
 Word<std::wstring &str>      = string (. str=t->val; .).
 
 END Root.  

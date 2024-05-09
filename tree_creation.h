@@ -67,12 +67,13 @@ void tree_creation(wchar_t string[20]){
         // wchar_t *string_pointer;
         // wchar_t string[20] = L"MARKOV.IN";
         wchar_t *file  = string;
+        ParseTree::AST* ast = new ParseTree::AST;
 
         Scanner *scanner = new Scanner(file);
-        Parser *parser   = new Parser(scanner);
+        Parser *parser   = new Parser(scanner, ast);
         parser->Parse();
 
-        TreeTraversal(ParseTree::AST::Root.Getstats());
+        TreeTraversal(ast->GetRoot()->Getstats());
 
         delete parser;
         delete scanner;

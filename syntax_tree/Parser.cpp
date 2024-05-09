@@ -12,6 +12,10 @@ void Parser::SynErr(int n) {
 	errDist = 0;
 }
 
+ParseTree::AST* Parser::GetASTRoot(){
+	return root;
+}
+
 void Parser::SemErr(const wchar_t* msg) {
 	if (errDist >= minErrDist) errors->Error(t->line, t->col, msg);
 	errDist = 0;
@@ -63,7 +67,7 @@ bool Parser::WeakSeparator(int n, int syFol, int repFol) {
 
 void Parser::Root() {
 		Expect(3 /* "dafe" */);
-		Block(ParseTree::AST::Root);
+		Block(*((*(Parser::GetASTRoot())).GetRoot()));
 }
 
 void Parser::Block(ParseTree::Block& B) {
@@ -107,11 +111,19 @@ void Parser::Stat(ParseTree::Stat*& s, ParseTree::Block& B) {
 			
 		} else if (la->kind == _ident) {
 			Link(link);
-			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link)); 
+			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link));
+			(*(Parser::GetASTRoot())).SetNewLink(link.GetName());
 			
 		} else if (la->kind == 15 /* "goto" */) {
 			Goto(Gt);
-			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt)); 
+			auto it = (*(Parser::GetASTRoot())).GetTableOfLink().find(Gt.GetLink());
+			if (it == (*(Parser::GetASTRoot())).GetTableOfLink().end()) {
+			     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			     std::string narrow = converter.to_bytes(Gt.GetLink());
+			     std::string str = "Unknown link " + narrow;
+			   	throw (std::runtime_error(str));
+			}
+			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt));
 			
 		} else SynErr(18);
 		B.add(ss);
@@ -320,9 +332,10 @@ void Parser::Parse() {
 	Expect(0);
 }
 
-Parser::Parser(Scanner *scanner) {
+Parser::Parser(Scanner *scanner, ParseTree::AST* a) {
 	maxT = 17;
 
+    this->root = a;
 	ParserInitCaller<Parser>::CallInit(this);
 	dummyToken = NULL;
 	t = la = NULL;

@@ -14,4 +14,5 @@ link:
     "who"->"?";
     }
     ""->"r";
+    goto error;
 }

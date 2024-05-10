@@ -116,13 +116,7 @@ void Parser::Stat(ParseTree::Stat*& s, ParseTree::Block& B) {
 			
 		} else if (la->kind == 15 /* "goto" */) {
 			Goto(Gt);
-			auto it = (*(Parser::GetASTRoot())).GetTableOfLink().find(Gt.GetLink());
-			if (it == (*(Parser::GetASTRoot())).GetTableOfLink().end()) {
-			     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-			     std::string narrow = converter.to_bytes(Gt.GetLink());
-			     std::string str = "Unknown link " + narrow;
-			   	throw (std::runtime_error(str));
-			}
+			(*(Parser::GetASTRoot())).SetNewGoto(Gt.GetLink());
 			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt));
 			
 		} else SynErr(18);

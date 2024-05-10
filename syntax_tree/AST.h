@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <locale>
+#include <codecvt>
 #include <unordered_map>
 
 namespace ParseTree
@@ -205,8 +207,25 @@ namespace ParseTree
 
     class AST
     { // класс для работы с нашим AST деревом, хранит самый верхний уровень вложенности
-        Block *Root;
-        std::unordered_map<std::wstring, int> TableOfLink;
+        Block *Root;// корень дерева
+        std::unordered_map<std::wstring, int> TableOfLink; // метки
+        std::vector<std::wstring> TableOfGoto;             // переходы к меткам
+        void CheckOfLinks()
+        { // проеверяем соответствие меток и переходов(goto)
+            for (size_t i = 0; i < TableOfGoto.size(); i++)
+            {
+                auto it = TableOfLink.find(TableOfGoto[i]);
+                if (it == TableOfLink.end())
+                { // нашли несоответствие, кидаем ошибку
+                    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+                    std::string narrow = converter.to_bytes(TableOfGoto[i]);
+
+                    std::string str = "Unknown link " + narrow;
+
+                    throw(std::runtime_error(str));
+                }
+            }
+        }
 
     public:
         AST()
@@ -215,12 +234,18 @@ namespace ParseTree
         }
         Block *GetRoot()
         {
+            CheckOfLinks();
             return Root;
         }
-        void SetNewLink(const std::wstring& str){ 
-            TableOfLink[str] = 0; 
+        void SetNewLink(const std::wstring &str)
+        {
+            TableOfLink[str] = 0;
         }
-        auto& GetTableOfLink(){ return TableOfLink; }
+        void SetNewGoto(const std::wstring &str)
+        {
+            TableOfGoto.push_back(str);
+        }
+        auto &GetTableOfLink() { return TableOfLink; }
     };
 
 } // namespace ParseTree

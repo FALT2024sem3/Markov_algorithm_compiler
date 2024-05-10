@@ -12,7 +12,8 @@ link:
         "Vostok" -> "Gagarin";
     }
     "who"->"?";
+    goto error;
     }
     ""->"r";
-    goto error;
+    error:
 }

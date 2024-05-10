@@ -206,8 +206,8 @@ namespace ParseTree
     };
 
     class AST
-    { // класс для работы с нашим AST деревом, хранит самый верхний уровень вложенности
-        Block *Root;// корень дерева
+    {                                                      // класс для работы с нашим AST деревом, хранит самый верхний уровень вложенности
+        Block *Root;                                       // корень дерева
         std::unordered_map<std::wstring, int> TableOfLink; // метки
         std::vector<std::wstring> TableOfGoto;             // переходы к меткам
         void CheckOfLinks()

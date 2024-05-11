@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "Qt_GUI/mainwindow.h"
 
 #include <QApplication>
 #include <QStandardItemModel>

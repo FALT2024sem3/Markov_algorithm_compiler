@@ -2,14 +2,15 @@
 #include <wchar.h>
 #include <string>
 #include <vector>
-#include "tree_creation.h"
-#include "get_AST.h"
+#include "get_AST/get_AST.h"
+#include "syntax_tree/Parser.h"
+#include "syntax_tree/Scanner.h"
 
-main()
+int main()
 {
         try
         {
-                wchar_t string[20] = L"MARKOV.IN";
+                wchar_t string[100] = L"C:\\Qt\\Markov_Algorythm\\Markov_algorithm_compiler\\Markov.IN";
                 wchar_t *file  = string;
                 ParseTree::AST* ast = new ParseTree::AST;
 
@@ -24,4 +25,5 @@ main()
         {
                 std::cerr << "Error: " << e.what() << std::endl;
         }
+        return 0;
 }

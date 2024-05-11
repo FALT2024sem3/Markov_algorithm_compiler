@@ -40,9 +40,9 @@ include_directories(syntax_tree get_AST)
 
 set(SOURCES
     get_AST/get_AST.cpp
+    get_AST/get_AST.h
     main.cpp
     MARKOV.IN
-    tree_creation.h
     syntax_tree/AST.h
     syntax_tree/Parser.cpp
     syntax_tree/Scanner.cpp

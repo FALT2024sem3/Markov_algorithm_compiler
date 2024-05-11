@@ -14,7 +14,7 @@ CMakeCache.txt
 CMakeLists.txt.user
 
 # Coco/R
-SyntaxTree/Parser.h
-SyntaxTree/Parser.cpp
-SyntaxTree/Scanner.h
-SyntaxTree/Scanner.cpp
+syntax_tree/Parser.h
+syntax_tree/Parser.cpp
+syntax_tree/Scanner.h
+syntax_tree/Scanner.cpp

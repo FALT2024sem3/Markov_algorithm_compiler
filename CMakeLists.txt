@@ -14,18 +14,20 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        Qt_GUI/mainwindow.cpp
+        Qt_GUI/mainwindow.h
+        Qt_GUI/mainwindow.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(untitled
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        test_tables.cpp
-        test_tables.h
-        file.cpp file.h file.ui
+        Qt_GUI/test_tables.cpp
+        Qt_GUI/test_tables.h
+        Qt_GUI/file.cpp
+        Qt_GUI/file.h
+        Qt_GUI/file.ui
         test.txt
     )
 # Define target properties for Android with Qt 6 as:

@@ -9,20 +9,21 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Generating Scanner and Parser with Coco/R
 add_custom_command(
-  OUTPUT ${PROJECT_SOURCE_DIR}/Scanner.h
-  OUTPUT ${PROJECT_SOURCE_DIR}/Scanner.cpp
-  OUTPUT ${PROJECT_SOURCE_DIR}/Parser.cpp
-  OUTPUT ${PROJECT_SOURCE_DIR}/Parser.h
-  COMMAND cd ${PROJECT_SOURCE_DIR}
+  OUTPUT ${PROJECT_SOURCE_DIR}/syntax_tree/Scanner.h
+  OUTPUT ${PROJECT_SOURCE_DIR}/syntax_tree/Scanner.cpp
+  OUTPUT ${PROJECT_SOURCE_DIR}/syntax_tree/Parser.cpp
+  OUTPUT ${PROJECT_SOURCE_DIR}/syntax_tree/Parser.h
+  COMMAND cd ${PROJECT_SOURCE_DIR}/syntax_tree
   COMMAND coco Markov_algo.cpp.atg
-  DEPENDS Markov_algo.cpp.atg
+  DEPENDS syntax_tree/Markov_algo.cpp.atg
   COMMENT "Generating coco files"
 )
 
 set(coco_gen_files
-    Scanner.h Scanner.cpp
-    Parser.cpp Parser.h
+    syntax_tree/Scanner.h syntax_tree/Scanner.cpp
+    syntax_tree/Parser.cpp syntax_tree/Parser.h
 )
 
 add_custom_target(
@@ -35,15 +36,21 @@ find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Gui)
 
+include_directories(syntax_tree get_AST)
+
+set(SOURCES
+    get_AST/get_AST.cpp
+    main.cpp
+    MARKOV.IN
+    tree_creation.h
+    syntax_tree/AST.h
+    syntax_tree/Parser.cpp
+    syntax_tree/Scanner.cpp
+    syntax_tree/Markov_algo.cpp.atg
+)
+
 add_executable(MarkovCompiler
-  get_AST.cpp
-  AST.h
-  main.cpp
-  Parser.cpp
-  Scanner.cpp
-  MARKOV.IN
-  tree_creation.h
-  Markov_algo.cpp.atg
+  ${SOURCES}
 )
 
 add_dependencies(MarkovCompiler coco_gen)
@@ -58,9 +65,11 @@ install(TARGETS MarkovCompiler
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+# Deleting .old files from generation
 set(generated_old
-    Scanner.cpp.old Scanner.h.old
-    Parser.cpp.old Parser.h.old
+    ${PROJECT_SOURCE_DIR}/syntax_tree/Scanner.cpp.old
+    ${PROJECT_SOURCE_DIR}/syntax_tree/Scanner.h.old
+    ${PROJECT_SOURCE_DIR}/syntax_tree/Parser.cpp.old
+    ${PROJECT_SOURCE_DIR}/syntax_tree/Parser.h.old
 )
-
 file(REMOVE ${generated_old})

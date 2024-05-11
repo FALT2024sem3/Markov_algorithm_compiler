@@ -1,3 +1,0 @@
-C:\cmake-3.27.6-windows-x86_64\bin\cmake.exe -E rm -f CMakeFiles\Compiler.dir/objects.a
-C:\mingw64\bin\ar.exe qc CMakeFiles\Compiler.dir/objects.a @CMakeFiles\Compiler.dir\objects1.rsp
-C:\mingw64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\Compiler.dir/objects.a -Wl,--no-whole-archive -o C:\Users\User\Desktop\Markov_algorithm_compiler\Compiler.exe -Wl,--out-implib,libCompiler.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Compiler.dir\linkLibs.rsp

@@ -1,0 +1,21 @@
+# VSCode
+*.vscode
+
+# Executables
+*.exe
+*.out
+*.app
+bin/
+
+# CMake
+CMakeFiles/
+build/
+CMakeCache.txt
+CMakeLists.txt.user
+
+# Coco/R
+syntax_tree/Parser.h
+syntax_tree/Parser.cpp
+syntax_tree/Scanner.h
+syntax_tree/Scanner.cpp
+syntax_tree/Scanner.h

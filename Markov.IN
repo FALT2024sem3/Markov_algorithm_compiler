@@ -1,0 +1,19 @@
+DAFE
+{
+link:
+    "d"->"o";
+    {
+    "c"->"t";
+    if ("a" or "s" and !"w") {
+        "o"->"p";
+    }
+    else{
+        goto link;
+        "Vostok" -> "Gagarin";
+    }
+    "who"->"?";
+    goto error;
+    }
+    ""->"r";
+    error:
+}

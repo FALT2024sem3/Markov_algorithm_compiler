@@ -34,7 +34,7 @@ add_custom_target(
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Gui)
-include_directories(syntax_tree get_AST)
+include_directories(syntax_tree get_AST Qt_GUI)
 set(SOURCES
     get_AST/get_AST.cpp
     get_AST/get_AST.h

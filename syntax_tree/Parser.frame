@@ -38,6 +38,9 @@ Parser.h Specification
 -->headerdef
 
 #include "Scanner.h"
+#include <locale>
+#include <codecvt>
+#include <string>
 
 -->namespace_open
 
@@ -60,6 +63,7 @@ private:
 	Token *dummyToken;
 	int errDist;
 	int minErrDist;
+	ParseTree::AST* root;
 
 	void SynErr(int n);
 	void Get();
@@ -77,7 +81,8 @@ public:
 
 -->declarations
 
-	Parser(Scanner *scanner);
+    ParseTree::AST* GetASTRoot();
+	Parser(Scanner *scanner, ParseTree::AST* a);
 	~Parser();
 	void SemErr(const wchar_t* msg);
 
@@ -108,6 +113,10 @@ Parser.cpp Specification
 void Parser::SynErr(int n) {
 	if (errDist >= minErrDist) errors->SynErr(la->line, la->col, n);
 	errDist = 0;
+}
+
+ParseTree::AST* Parser::GetASTRoot(){
+	return root;
 }
 
 void Parser::SemErr(const wchar_t* msg) {
@@ -258,8 +267,9 @@ void Parser::Parse() {
 -->parseRoot
 }
 
-Parser::Parser(Scanner *scanner) {
+Parser::Parser(Scanner *scanner, ParseTree::AST* a) {
 -->constants
+    this->root = a;
 	ParserInitCaller<Parser>::CallInit(this);
 	dummyToken = NULL;
 	t = la = NULL;
@@ -300,8 +310,10 @@ void Errors::SynErr(int line, int col, int n) {
 		}
 		break;
 	}
-	wprintf(L"-- line %d col %d: %ls\n", line, col, s);
+	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    std::string narrow = converter.to_bytes(s);
 	coco_string_delete(s);
+	throw (std::runtime_error(narrow));
 	count++;
 }
 

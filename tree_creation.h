@@ -1,6 +1,6 @@
-#include "Parser.h"
-#include "Scanner.h"
-#include "AST.h"
+#include "syntax_tree/Parser.h"
+#include "syntax_tree/Scanner.h"
+#include "syntax_tree/AST.h"
 
 // #define GETONLYROOT
 
@@ -63,16 +63,17 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
 
 };
 
-void tree_creation(){
-        wchar_t *string_pointer;
-        wchar_t string[20] = L"MARKOV.IN";
+void tree_creation(wchar_t string[20]){
+        // wchar_t *string_pointer;
+        // wchar_t string[20] = L"MARKOV.IN";
         wchar_t *file  = string;
+        ParseTree::AST* ast = new ParseTree::AST;
 
         Scanner *scanner = new Scanner(file);
-        Parser *parser   = new Parser(scanner);
+        Parser *parser   = new Parser(scanner, ast);
         parser->Parse();
 
-        TreeTraversal(ParseTree::AST::Root.Getstats());
+        TreeTraversal(ast->GetRoot()->Getstats());
 
         delete parser;
         delete scanner;

@@ -4,10 +4,8 @@
 #include <vector>
 #include "tree_creation.h"
 
-
- 
 main()
 {
-        tree_creation();
-        return 0;
+    tree_creation();
+    return 0;
 }

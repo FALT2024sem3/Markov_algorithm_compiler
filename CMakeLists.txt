@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(test LANGUAGES CXX)
+project(MarkovCompiler LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -8,39 +8,59 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# set(CMAKE_PREFIX_PATH "C:/msys64/mingw64/bin/clang.exe")
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
+add_custom_command(
+  OUTPUT ${PROJECT_SOURCE_DIR}/Scanner.h
+  OUTPUT ${PROJECT_SOURCE_DIR}/Scanner.cpp
+  OUTPUT ${PROJECT_SOURCE_DIR}/Parser.cpp
+  OUTPUT ${PROJECT_SOURCE_DIR}/Parser.h
+  COMMAND cd ${PROJECT_SOURCE_DIR}
+  COMMAND coco Markov_algo.cpp.atg
+  DEPENDS Markov_algo.cpp.atg
+  COMMENT "Generating coco files"
+)
+
+set(coco_gen_files
+    Scanner.h Scanner.cpp
+    Parser.cpp Parser.h
+)
+
+add_custom_target(
+    coco_gen
+    ALL
+    DEPENDS ${coco_gen_files}
+)
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt6 REQUIRED COMPONENTS Gui)
-#find_package(CoCo REQUIRED)
 
-# include_directories(${CoCo_INCLUDE_DIRS})
-
-add_executable(test
-  get_AST.h
+add_executable(MarkovCompiler
   get_AST.cpp
   AST.h
   main.cpp
-  Parser.h
   Parser.cpp
-  Parser.frame
-  Scanner.h
   Scanner.cpp
-  Scanner.frame
-  coco.exe
-  expr.atg
-  makefile
+  MARKOV.IN
+  tree_creation.h
+  Markov_algo.cpp.atg
 )
 
-target_link_libraries(test Qt${QT_VERSION_MAJOR}::Core)
-target_link_libraries(test Qt6::Widgets)
-target_link_libraries(test Qt6::Gui)
-target_link_libraries(test ${CoCo_LIBRARIES})
+add_dependencies(MarkovCompiler coco_gen)
+
+target_link_libraries(MarkovCompiler Qt6::Core)
+target_link_libraries(MarkovCompiler Qt6::Widgets)
+target_link_libraries(MarkovCompiler Qt6::Gui)
 
 include(GNUInstallDirs)
-install(TARGETS test
+install(TARGETS MarkovCompiler
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+set(generated_old
+    Scanner.cpp.old Scanner.h.old
+    Parser.cpp.old Parser.h.old
+)
+
+file(REMOVE ${generated_old})

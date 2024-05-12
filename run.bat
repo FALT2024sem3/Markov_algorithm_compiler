@@ -1,9 +1,9 @@
-.\Coco.exe .\Markov_algo.cpp.atg
-g++ -c Parser.cpp -o parser.o 
-g++ -c Scanner.cpp -o scanner.o
+.\syntax_tree\Coco.exe .\syntax_tree\Markov_algo.cpp.atg
+g++ -c .\syntax_tree\Parser.cpp -o parser.o 
+g++ -c .\syntax_tree\Scanner.cpp -o scanner.o
 g++ -c main.cpp
 g++ -o tr.exe scanner.o parser.o main.o
 .\tr.exe .\Markov.IN
 
-del Scanner.cpp.old Scanner.h.old Parser.cpp.old Parser.h.old 
+del .\syntax_tree\Scanner.cpp.old .\syntax_tree\Scanner.h.old .\syntax_tree\Parser.cpp.old .\syntax_tree\Parser.h.old 
 del scanner.o parser.o main.o

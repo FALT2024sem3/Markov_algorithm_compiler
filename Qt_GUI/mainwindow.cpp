@@ -44,8 +44,10 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
 
 void MainWindow::on_buildTreeButton_clicked()
 {
+    createTempFile("./temp.temp");
     // TO_CHANGE place written code into file -------------------------------------------------------
-    ParseTree::AST* ast = build_AST(ui->codeTextEdit->toPlainText().toStdString());
+    ParseTree::AST* ast = build_AST("./temp.temp");
+    deleteTempFile("./temp.temp");
 
     QStandardItemModel *model = new QStandardItemModel();
     get_AST(ast->GetRoot()->Getstats(), model->invisibleRootItem());
@@ -73,4 +75,23 @@ void MainWindow::loadCode(const QString &filePath)
 
     QString code = QTextStream(&code_file).readAll();
     ui->codeTextEdit->setPlainText(code);
+}
+
+void MainWindow::createTempFile(const QString filePath)
+{
+    QFile temp_file(filePath);
+    if (!temp_file.open(QFile::WriteOnly | QFile::Text))
+    {
+        QMessageBox::warning(this, "ERROR", "Unable to create temp file!");
+    }
+
+    QTextStream temp_stream(&temp_file);
+    temp_stream << ui->codeTextEdit->toPlainText();
+
+}
+
+void MainWindow::deleteTempFile(const QString filePath)
+{
+    QFile temp_file(filePath);
+    temp_file.remove();
 }

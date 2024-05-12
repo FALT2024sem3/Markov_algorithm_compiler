@@ -20,3 +20,4 @@ syntax_tree/Scanner.h
 syntax_tree/Scanner.cpp
 syntax_tree/Scanner.h
 CMakeLists.txt.user
+*.old

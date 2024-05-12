@@ -1,22 +1,5 @@
 #include "get_AST.h"
 
-// Функция для вывода "дерева" в консоль. На вход давать parent_item(тото который model.invisibleRootItem())
-// Может понадобиться для тестов
-// void printItems(const QStandardItem *parent, int level = 0)
-// {
-
-//     for (int i{}; i < parent->rowCount(); i++)
-//     {
-//         for (int j{}; j < level; j++)
-//         {
-//             std::cout << "  "; // для отделения дочерних узлов выводим пробелы
-//         }
-//         QStandardItem *item = parent->child(i, 0);
-//         std::cout << item->data(Qt::DisplayRole).toString().toStdString() << std::endl;
-//         printItems(item, level + 1);
-//     }
-// }
-
 void wstring_to_AST(std::wstring wstr, QStandardItem *parent_item)
 {
     QString qtString = QString::fromWCharArray(wstr.c_str());
@@ -58,16 +41,16 @@ void get_AST(const std::vector<ParseTree::Stat *> &st, QStandardItem *parent_ite
     {
         if (st[i]->Type == ParseTree::NodeType::BinExpr)
         { // вывод бинарных выражений
-            ParseTree::BinExpr *elem = dynamic_cast<ParseTree::BinExpr *>(st[i]);
+            ParseTree::BinExpr *bin_expr = dynamic_cast<ParseTree::BinExpr *>(st[i]);
 
-            QStandardItem *bin_expr = new QStandardItem("Bin Expr");
-            parent_item->appendRow(bin_expr);
+            QStandardItem *bin_item = new QStandardItem("Bin Expr");
+            parent_item->appendRow(bin_item);
 
-            std::wstring left_value = elem->GetLeftExpr();
-            wstring_to_AST(left_value, bin_expr);
+            std::wstring left_value = bin_expr->GetLeftExpr();
+            wstring_to_AST(left_value, bin_item);
 
-            std::wstring right_value = elem->GetRightExpr();
-            wstring_to_AST(right_value, bin_expr);
+            std::wstring right_value = bin_expr->GetRightExpr();
+            wstring_to_AST(right_value, bin_item);
         }
         else if (st[i]->Type == ParseTree::NodeType::Block)
         { // вывод блока
@@ -84,10 +67,10 @@ void get_AST(const std::vector<ParseTree::Stat *> &st, QStandardItem *parent_ite
             parent_item->appendRow(if_else_item);
 
             // вывод условия if
-            ParseTree::Expr *cond_expr = ifelse->GetCond();
+            ParseTree::Expr *cond = ifelse->GetCond();
             QStandardItem *cond_item = new QStandardItem("Condition");
             if_else_item->appendRow(cond_item);
-            cond_to_QSIM(cond_expr, cond_item);
+            cond_to_QSIM(cond, cond_item);
 
             // вывод внутренностей if
             ParseTree::Block *if_block = ifelse->GetIfBlock();
@@ -99,9 +82,9 @@ void get_AST(const std::vector<ParseTree::Stat *> &st, QStandardItem *parent_ite
             ParseTree::Block *else_block = ifelse->GetElseBlock();
             if (!else_block->Getstats().empty())
             {
-                QStandardItem *else_block_expr = new QStandardItem("Do else");
-                if_else_item->appendRow(else_block_expr);
-                get_AST(else_block->Getstats(), else_block_expr);
+                QStandardItem *else_block_item = new QStandardItem("Do else");
+                if_else_item->appendRow(else_block_item);
+                get_AST(else_block->Getstats(), else_block_item);
             }
         }
         else if (st[i]->Type == ParseTree::NodeType::Link)

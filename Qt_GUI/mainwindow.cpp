@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "test_tables.h"
+#include "./get_AST.h"
+#include "./build_AST.h"
+#include "AST.h"
 #include "file.h"
+#include "qdir.h"
 
 #include <QMessageBox>
 
@@ -41,10 +44,11 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
 
 void MainWindow::on_buildTreeButton_clicked()
 {
-    std::string AST_tree = build_AST(ui->codeTextEdit->toPlainText().toStdString());
+    // TO_CHANGE place written code into file -------------------------------------------------------
+    ParseTree::AST* ast = build_AST(ui->codeTextEdit->toPlainText().toStdString());
 
     QStandardItemModel *model = new QStandardItemModel();
-    build_QSIM(model, AST_tree);
+    get_AST(ast->GetRoot()->Getstats(), model->invisibleRootItem());
 
     build_tree(model);
 }

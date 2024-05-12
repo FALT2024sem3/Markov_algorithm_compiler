@@ -50,12 +50,15 @@ set(SOURCES
 )
 add_executable(MarkovCompiler
   ${SOURCES}
-        Qt_GUI/test_tables.cpp
-        Qt_GUI/test_tables.h
+
+
         Qt_GUI/file.cpp
         Qt_GUI/file.h
         Qt_GUI/file.ui
         test.txt
+        get_AST/build_AST.h
+        get_AST/build_AST.cpp
+
 )
 
 add_dependencies(MarkovCompiler coco_gen)

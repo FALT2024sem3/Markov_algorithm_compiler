@@ -2,9 +2,6 @@
 #define AST_H
 
 #include <string>
-#include <sstream>
-#include <iostream>
-#include <fstream>
 #include <vector>
 #include <locale>
 #include <codecvt>

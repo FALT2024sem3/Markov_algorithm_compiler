@@ -26,8 +26,8 @@ void MainWindow::build_tree(QStandardItemModel *table_tree)
 
     QStandardItem *parent = table_tree->invisibleRootItem();
     tree_add_children(parent, ui->ASTtreeWidget->invisibleRootItem());
-
     ui->ASTtreeWidget->expandAll();
+    ui->ASTtreeWidget->setStyleSheet( "QTreeView::branch {  border-image: url(none.png); }" );
 }
 
 void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *tree_item)
@@ -36,10 +36,11 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
     {
         QTreeWidgetItem *child = new QTreeWidgetItem;
         child->setText(0, table_item->child(i)->text());
+        tree_add_children(table_item->child(i), child);
         tree_item->addChild(child);
 
-        tree_add_children(table_item->child(i), child);
     }
+
 }
 
 void MainWindow::on_buildTreeButton_clicked()

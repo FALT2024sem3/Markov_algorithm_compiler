@@ -7,6 +7,7 @@
 #include "qdir.h"
 
 #include <QMessageBox>
+#include <QFileDialog>>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -59,10 +60,8 @@ void MainWindow::on_buildTreeButton_clicked()
 
 void MainWindow::on_loadCodeButton_clicked()
 {
-    File *wnd = new File(this);
-    wnd->show();
-
-    connect(wnd, SIGNAL(filePath(QString)), this, SLOT(loadCode(QString)));
+    QString filepath = QFileDialog::getOpenFileName(this, tr("Open File"), "C://", "All files (*.*);; Text File (*.txt)");
+    loadCode(filepath);
 }
 
 

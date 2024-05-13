@@ -33,9 +33,9 @@ add_executable(MarkovCompiler
   ${SOURCES}
 
 
-        Qt_GUI/file.cpp
-        Qt_GUI/file.h
-        Qt_GUI/file.ui
+
+
+
         test.txt
         get_AST/build_AST.h
         get_AST/build_AST.cpp

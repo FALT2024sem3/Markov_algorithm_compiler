@@ -34,9 +34,6 @@ set(SOURCES
     Qt_GUI/mainwindow.cpp
     Qt_GUI/mainwindow.h
     Qt_GUI/mainwindow.ui
-    Qt_GUI/file.cpp
-    Qt_GUI/file.h
-    Qt_GUI/file.ui
 )
 
 add_executable(MarkovCompiler ${SOURCES})

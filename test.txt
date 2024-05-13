@@ -1,16 +1,19 @@
 DAFE
 {
-    "d"->"o";;-12;
+link:
+    "d"->"o";
     {
     "c"->"t";
-    if ("a" and "s" or "w") {
+    if ("a" or "s" and !"w") {
         "o"->"p";
     }
     else{
+        goto link;
         "Vostok" -> "Gagarin";
     }
     "who"->"?";
+    goto error;
     }
     ""->"r";
+    error:
 }
-

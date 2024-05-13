@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "tree_creation.h"
+#include "syntax_tree/MyException.h"
 
 main()
 {
@@ -11,8 +12,9 @@ main()
                 wchar_t string[20] = L"MARKOV.IN";
                 tree_creation(string);
         }
-        catch (const std::runtime_error &e)
+        catch (MyException &e)
         {
                 std::cerr << "Error: " << e.what() << std::endl;
+                std::cerr << "In line: " << e.GetLineNumber() << std::endl;
         }
 }

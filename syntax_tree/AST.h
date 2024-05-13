@@ -9,6 +9,7 @@
 #include <locale>
 #include <codecvt>
 #include <unordered_map>
+#include <memory>
 
 namespace ParseTree
 {
@@ -18,7 +19,7 @@ namespace ParseTree
         SUB
     };
     enum class NodeType
-    {
+    { // Типы всех возможных узлов
         BinExpr,
         SinglExpr,
         Block,
@@ -30,7 +31,7 @@ namespace ParseTree
         Goto
     };
     enum class TypeOfLogicOp
-    {
+    { // Типы логических операторов
         AND,
         OR,
         NOT
@@ -41,21 +42,22 @@ namespace ParseTree
         virtual const char *getMsg() { return "ParentClass"; }
 
     public:
+        // Тип узла
         NodeType Type;
     };
 
-    //---------------------Expressions--------------------//
+    //------------------------Expressions-------------------------//
 
     class Expr : public Node
     {
     };
 
     class SinglExpr : public Expr
-    { // для выражений вида: "abc" или "abc", используемых в if
-        std::wstring e;
+    {                   // для выражений вида: "abc" или "abc", используемых в if
+        std::wstring e; // Подстрока для проверки наличия в исходной строке
 
     public:
-        std::wstring GetExpr() { return e; }
+        std::wstring GetExpr() { return e; } // Получить подстроку
         SinglExpr() {}
         SinglExpr(const SinglExpr &s)
         {
@@ -70,17 +72,17 @@ namespace ParseTree
     };
 
     class BinLogOp : public Expr
-    { // для or и and
-        Expr *LeftOp;
-        Expr *RigthOp;
-        TypeOfLogicOp LogType;
+    {                                             // для or и and
+        std::shared_ptr<ParseTree::Expr> LeftOp;  // Левый операнд
+        std::shared_ptr<ParseTree::Expr> RigthOp; // Правый операнд
+        TypeOfLogicOp LogType;                    // Тип логической операции
 
     public:
-        Expr *GetLeftOp() { return this->LeftOp; }
-        Expr *GetRighttOp() { return this->RigthOp; }
-        TypeOfLogicOp GetTypeLogOp() { return LogType; }
+        std::shared_ptr<ParseTree::Expr> GetLeftOp() { return this->LeftOp; }    // Получить Левый операнд
+        std::shared_ptr<ParseTree::Expr> GetRighttOp() { return this->RigthOp; } // Получить Правый операнд
+        TypeOfLogicOp GetTypeLogOp() { return LogType; }                         // Получить Тип логической операции
         BinLogOp() {}
-        BinLogOp(Expr *l, TypeOfLogicOp tp, Expr *r)
+        BinLogOp(std::shared_ptr<ParseTree::Expr> l, TypeOfLogicOp tp, std::shared_ptr<ParseTree::Expr> r)
         {
             this->LeftOp = l;
             this->RigthOp = r;
@@ -90,15 +92,15 @@ namespace ParseTree
     };
 
     class SinglLogOp : public Expr
-    { // для not
-        Expr *Op;
-        TypeOfLogicOp LogType;
+    {                                        // для not
+        std::shared_ptr<ParseTree::Expr> Op; // Операнд
+        TypeOfLogicOp LogType;               // Тип логической операции
 
     public:
-        Expr *GetOp() { return this->Op; }
-        TypeOfLogicOp GetTypeLogOp() { return LogType; }
+        std::shared_ptr<ParseTree::Expr> GetOp() { return this->Op; } // Получить операнд
+        TypeOfLogicOp GetTypeLogOp() { return LogType; }              // Получить тип логической операции
         SinglLogOp() {}
-        SinglLogOp(Expr *o, TypeOfLogicOp tp)
+        SinglLogOp(std::shared_ptr<ParseTree::Expr> o, TypeOfLogicOp tp)
         {
             this->Op = o;
             this->LogType = tp;
@@ -106,7 +108,7 @@ namespace ParseTree
         }
     };
 
-    //---------------------Statements--------------------//
+    //-------------------------Statements-------------------------//
 
     class Stat : public Node
     {
@@ -116,9 +118,9 @@ namespace ParseTree
     class BinExpr : public Stat
     { // для выражений вида: "abc"->"def", по сути это наши замены
     private:
-        Operator op;
-        std::wstring left;
-        std::wstring right;
+        Operator op;        // Оператор
+        std::wstring left;  // Левый операнд
+        std::wstring right; // Правый операнд
 
     public:
         BinExpr() {}
@@ -130,29 +132,29 @@ namespace ParseTree
             this->Type = NodeType::BinExpr;
         }
 
-        std::wstring GetLeftExpr() { return left; }
-        std::wstring GetRightExpr() { return right; }
-        Operator GetOp() { return op; }
+        std::wstring GetLeftExpr() { return left; }   // Получить левый операнд
+        std::wstring GetRightExpr() { return right; } // Получить правый операнд
+        Operator GetOp() { return op; }               // Получить оператор
     };
 
     class Block : public Stat
     { // блок, который хранит все остальный конструкции
-        std::vector<Stat *> stats;
+        std::vector<std::shared_ptr<ParseTree::Stat>> stats;
 
     public:
-        std::vector<Stat *> Getstats() { return stats; }
+        std::vector<std::shared_ptr<ParseTree::Stat>> Getstats() { return stats; } // Получить блок
         Block() { this->Type = NodeType::Block; }
-        void add(Stat *s) { stats.push_back(s); }
+        void add(std::shared_ptr<ParseTree::Stat> s) { stats.push_back(s); } // Добавить что-то в блок
     };
 
     class Link : public Stat
     {
-        std::wstring name;
+        std::wstring name; // Имя метки
 
     public:
         Link() {}
-        std::wstring GetName() { return name; }
-        void SetName(std::wstring n) { name = n; }
+        std::wstring GetName() { return name; }    // Получить имя метки
+        void SetName(std::wstring n) { name = n; } // Установить имя метки
         Link(const Link &ln)
         {
             name = ln.name;
@@ -167,12 +169,12 @@ namespace ParseTree
 
     class Goto : public Stat
     {
-        std::wstring link;
+        std::wstring link; // Имя прыжка
 
     public:
         Goto() {}
-        std::wstring GetLink() { return link; }
-        void SetLink(std::wstring n) { link = n; }
+        std::wstring GetLink() { return link; }    // Получить имя прыжка
+        void SetLink(std::wstring n) { link = n; } // Установить имя прыжка
         Goto(const Goto &gt)
         {
             link = gt.link;
@@ -186,17 +188,17 @@ namespace ParseTree
     };
 
     class IfElse : public Stat
-    { // конструкция блока if
-        Expr *Cond;
-        Block *IfBlock;
-        Block *ElseBlock;
+    {                                                // конструкция блока if
+        std::shared_ptr<ParseTree::Expr> Cond;       // Условие блока If
+        std::shared_ptr<ParseTree::Block> IfBlock;   // Блок If
+        std::shared_ptr<ParseTree::Block> ElseBlock; // Блок Else
 
     public:
-        Expr *GetCond() { return Cond; }
-        Block *GetIfBlock() { return IfBlock; }
-        Block *GetElseBlock() { return ElseBlock; }
+        std::shared_ptr<ParseTree::Expr> GetCond() { return Cond; }            // Получить условие
+        std::shared_ptr<ParseTree::Block> GetIfBlock() { return IfBlock; }     // Получить блок If
+        std::shared_ptr<ParseTree::Block> GetElseBlock() { return ElseBlock; } // Получить блок Else
         IfElse() { this->Type = NodeType::If; }
-        IfElse(Expr *e, Block *s1, Block *s2)
+        IfElse(std::shared_ptr<ParseTree::Expr> e, std::shared_ptr<ParseTree::Block> s1, std::shared_ptr<ParseTree::Block> s2)
         {
             Cond = e;
             IfBlock = s1;
@@ -207,7 +209,7 @@ namespace ParseTree
 
     class AST
     {                                                      // класс для работы с нашим AST деревом, хранит самый верхний уровень вложенности
-        Block *Root;                                       // корень дерева
+        std::shared_ptr<ParseTree::Block> Root;            // корень дерева
         std::unordered_map<std::wstring, int> TableOfLink; // метки
         std::vector<std::wstring> TableOfGoto;             // переходы к меткам
         void CheckOfLinks()
@@ -230,22 +232,21 @@ namespace ParseTree
     public:
         AST()
         {
-            Root = new ParseTree::Block;
+            Root = std::make_shared<ParseTree::Block>();
         }
-        Block *GetRoot()
+        std::shared_ptr<ParseTree::Block> GetRoot() // Возвращаем корень дерева
         {
             CheckOfLinks();
             return Root;
         }
-        void SetNewLink(const std::wstring &str)
+        void SetNewLink(const std::wstring &str) // Установить новую метку
         {
             TableOfLink[str] = 0;
         }
-        void SetNewGoto(const std::wstring &str)
+        void SetNewGoto(const std::wstring &str) // Установить новый прыжок
         {
             TableOfGoto.push_back(str);
         }
-        auto &GetTableOfLink() { return TableOfLink; }
     };
 
 } // namespace ParseTree

@@ -49,5 +49,6 @@
         "typeinfo": "cpp",
         "codecvt": "cpp",
         "ctime": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": false
 }

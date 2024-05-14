@@ -46,7 +46,6 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
 void MainWindow::on_buildTreeButton_clicked()
 {
     createTempFile("./temp.temp");
-    // TO_CHANGE place written code into file -------------------------------------------------------
     ParseTree::AST* ast = build_AST("./temp.temp");
     deleteTempFile("./temp.temp");
 

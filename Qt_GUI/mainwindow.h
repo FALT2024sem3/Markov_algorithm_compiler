@@ -21,14 +21,16 @@ public:
 
 private slots:
     void loadCode(const QString &filePath);
-    void createTempFile(const QString filePath);
-    void deleteTempFile(const QString filePath);
 
     void on_buildTreeButton_clicked();
     void on_loadCodeButton_clicked();
 
 private:
     Ui::MainWindow *ui;
+
+    void createTempFile(const QString filePath);
+    void deleteTempFile(const QString filePath);
+
     void build_tree(QStandardItemModel *table_tree);
     void tree_add_children(QStandardItem *table_item, QTreeWidgetItem *tree_item);
 };

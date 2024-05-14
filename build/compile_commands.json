@@ -1,20 +1,62 @@
 [
 {
-  "directory": "C:/Users/User/Desktop/Markov_algorithm_compiler/build",
-  "command": "C:\\mingw64\\bin\\g++.exe   -g -std=c++11 -o CMakeFiles\\Compiler.dir\\Parser.cpp.obj -c C:\\Users\\User\\Desktop\\Markov_algorithm_compiler\\Parser.cpp",
-  "file": "C:/Users/User/Desktop/Markov_algorithm_compiler/Parser.cpp",
-  "output": "CMakeFiles/Compiler.dir/Parser.cpp.obj"
+  "directory": "D:/compil/Markov_algorithm_compiler/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\Compiler.dir\\syntax_tree\\Parser.cpp.obj -c D:\\compil\\Markov_algorithm_compiler\\syntax_tree\\Parser.cpp",
+  "file": "D:/compil/Markov_algorithm_compiler/syntax_tree/Parser.cpp",
+  "output": "CMakeFiles/Compiler.dir/syntax_tree/Parser.cpp.obj"
 },
 {
-  "directory": "C:/Users/User/Desktop/Markov_algorithm_compiler/build",
-  "command": "C:\\mingw64\\bin\\g++.exe   -g -std=c++11 -o CMakeFiles\\Compiler.dir\\Scanner.cpp.obj -c C:\\Users\\User\\Desktop\\Markov_algorithm_compiler\\Scanner.cpp",
-  "file": "C:/Users/User/Desktop/Markov_algorithm_compiler/Scanner.cpp",
-  "output": "CMakeFiles/Compiler.dir/Scanner.cpp.obj"
+  "directory": "D:/compil/Markov_algorithm_compiler/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\Compiler.dir\\syntax_tree\\Scanner.cpp.obj -c D:\\compil\\Markov_algorithm_compiler\\syntax_tree\\Scanner.cpp",
+  "file": "D:/compil/Markov_algorithm_compiler/syntax_tree/Scanner.cpp",
+  "output": "CMakeFiles/Compiler.dir/syntax_tree/Scanner.cpp.obj"
 },
 {
-  "directory": "C:/Users/User/Desktop/Markov_algorithm_compiler/build",
-  "command": "C:\\mingw64\\bin\\g++.exe   -g -std=c++11 -o CMakeFiles\\Compiler.dir\\main.cpp.obj -c C:\\Users\\User\\Desktop\\Markov_algorithm_compiler\\main.cpp",
-  "file": "C:/Users/User/Desktop/Markov_algorithm_compiler/main.cpp",
+  "directory": "D:/compil/Markov_algorithm_compiler/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/Compiler.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\Compiler.dir\\main.cpp.obj -c D:\\compil\\Markov_algorithm_compiler\\main.cpp",
+  "file": "D:/compil/Markov_algorithm_compiler/main.cpp",
   "output": "CMakeFiles/Compiler.dir/main.cpp.obj"
+},
+{
+  "directory": "D:/compil/Markov_algorithm_compiler/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/CompilerTests.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\CompilerTests.dir\\syntax_tree\\Parser.cpp.obj -c D:\\compil\\Markov_algorithm_compiler\\syntax_tree\\Parser.cpp",
+  "file": "D:/compil/Markov_algorithm_compiler/syntax_tree/Parser.cpp",
+  "output": "CMakeFiles/CompilerTests.dir/syntax_tree/Parser.cpp.obj"
+},
+{
+  "directory": "D:/compil/Markov_algorithm_compiler/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/CompilerTests.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\CompilerTests.dir\\syntax_tree\\Scanner.cpp.obj -c D:\\compil\\Markov_algorithm_compiler\\syntax_tree\\Scanner.cpp",
+  "file": "D:/compil/Markov_algorithm_compiler/syntax_tree/Scanner.cpp",
+  "output": "CMakeFiles/CompilerTests.dir/syntax_tree/Scanner.cpp.obj"
+},
+{
+  "directory": "D:/compil/Markov_algorithm_compiler/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/CompilerTests.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\CompilerTests.dir\\test_main.cpp.obj -c D:\\compil\\Markov_algorithm_compiler\\test_main.cpp",
+  "file": "D:/compil/Markov_algorithm_compiler/test_main.cpp",
+  "output": "CMakeFiles/CompilerTests.dir/test_main.cpp.obj"
+},
+{
+  "directory": "D:/compil/Markov_algorithm_compiler/build/googletest/googlemock",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/gmock.dir/includes_CXX.rsp -g -std=c++17 -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles\\gmock.dir\\src\\gmock-all.cc.obj -c D:\\compil\\Markov_algorithm_compiler\\googletest\\googlemock\\src\\gmock-all.cc",
+  "file": "D:/compil/Markov_algorithm_compiler/googletest/googlemock/src/gmock-all.cc",
+  "output": "googletest/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.obj"
+},
+{
+  "directory": "D:/compil/Markov_algorithm_compiler/build/googletest/googlemock",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/gmock_main.dir/includes_CXX.rsp -g -std=c++17 -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles\\gmock_main.dir\\src\\gmock_main.cc.obj -c D:\\compil\\Markov_algorithm_compiler\\googletest\\googlemock\\src\\gmock_main.cc",
+  "file": "D:/compil/Markov_algorithm_compiler/googletest/googlemock/src/gmock_main.cc",
+  "output": "googletest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.obj"
+},
+{
+  "directory": "D:/compil/Markov_algorithm_compiler/build/googletest/googletest",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/gtest.dir/includes_CXX.rsp -g -std=c++17 -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles\\gtest.dir\\src\\gtest-all.cc.obj -c D:\\compil\\Markov_algorithm_compiler\\googletest\\googletest\\src\\gtest-all.cc",
+  "file": "D:/compil/Markov_algorithm_compiler/googletest/googletest/src/gtest-all.cc",
+  "output": "googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.obj"
+},
+{
+  "directory": "D:/compil/Markov_algorithm_compiler/build/googletest/googletest",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/gtest_main.dir/includes_CXX.rsp -g -std=c++17 -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=0 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -o CMakeFiles\\gtest_main.dir\\src\\gtest_main.cc.obj -c D:\\compil\\Markov_algorithm_compiler\\googletest\\googletest\\src\\gtest_main.cc",
+  "file": "D:/compil/Markov_algorithm_compiler/googletest/googletest/src/gtest_main.cc",
+  "output": "googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.obj"
 }
 ]

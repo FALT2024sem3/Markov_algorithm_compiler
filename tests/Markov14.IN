@@ -1,0 +1,6 @@
+DAFE
+{
+    if "a" And "s" or !"w" {
+        "o"->"p";
+    }
+}

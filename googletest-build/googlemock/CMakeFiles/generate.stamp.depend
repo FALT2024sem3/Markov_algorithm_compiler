@@ -1,0 +1,10 @@
+# CMake generation dependency list for this directory.
+D:/CMAKE/share/cmake-3.28/Modules/CheckCSourceCompiles.cmake
+D:/CMAKE/share/cmake-3.28/Modules/CheckIncludeFile.cmake
+D:/CMAKE/share/cmake-3.28/Modules/CheckLibraryExists.cmake
+D:/CMAKE/share/cmake-3.28/Modules/FindPackageHandleStandardArgs.cmake
+D:/CMAKE/share/cmake-3.28/Modules/FindPackageMessage.cmake
+D:/CMAKE/share/cmake-3.28/Modules/FindThreads.cmake
+D:/compil/Markov_algorithm_compiler/googletest/googlemock/CMakeLists.txt
+D:/compil/Markov_algorithm_compiler/googletest/googlemock/cmake/gmock.pc.in
+D:/compil/Markov_algorithm_compiler/googletest/googlemock/cmake/gmock_main.pc.in

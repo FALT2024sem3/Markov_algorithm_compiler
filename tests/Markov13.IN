@@ -1,0 +1,7 @@
+DAFE
+{
+    else{
+        goto link;
+        "Vostok" -> "Gagarin";
+    }
+}

@@ -1,13 +1,13 @@
 file(REMOVE_RECURSE
-  "C:/Users/User/Desktop/Markov_algorithm_compiler/Compiler.exe"
-  "C:/Users/User/Desktop/Markov_algorithm_compiler/Compiler.exe.manifest"
-  "C:/Users/User/Desktop/Markov_algorithm_compiler/Compiler.pdb"
-  "CMakeFiles/Compiler.dir/Parser.cpp.obj"
-  "CMakeFiles/Compiler.dir/Parser.cpp.obj.d"
-  "CMakeFiles/Compiler.dir/Scanner.cpp.obj"
-  "CMakeFiles/Compiler.dir/Scanner.cpp.obj.d"
   "CMakeFiles/Compiler.dir/main.cpp.obj"
   "CMakeFiles/Compiler.dir/main.cpp.obj.d"
+  "CMakeFiles/Compiler.dir/syntax_tree/Parser.cpp.obj"
+  "CMakeFiles/Compiler.dir/syntax_tree/Parser.cpp.obj.d"
+  "CMakeFiles/Compiler.dir/syntax_tree/Scanner.cpp.obj"
+  "CMakeFiles/Compiler.dir/syntax_tree/Scanner.cpp.obj.d"
+  "D:/compil/Markov_algorithm_compiler/Compiler.exe"
+  "D:/compil/Markov_algorithm_compiler/Compiler.exe.manifest"
+  "D:/compil/Markov_algorithm_compiler/Compiler.pdb"
   "libCompiler.dll.a"
 )
 

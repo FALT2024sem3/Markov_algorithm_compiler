@@ -1,0 +1,1 @@
+-isystem D:/compil/Markov_algorithm_compiler/googletest/googlemock/include -isystem D:/compil/Markov_algorithm_compiler/googletest/googlemock -isystem D:/compil/Markov_algorithm_compiler/googletest/googletest/include -isystem D:/compil/Markov_algorithm_compiler/googletest/googletest

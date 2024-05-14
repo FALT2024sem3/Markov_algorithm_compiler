@@ -1,0 +1,10 @@
+^D:\COMPIL\MARKOV_ALGORITHM_COMPILER\GOOGLETEST-BUILD\CMAKEFILES\C659BD690238A59E649FF24686374229\GENERATE.STAMP.RULE
+setlocal
+D:\CMAKE\bin\cmake.exe -SD:/compil/Markov_algorithm_compiler/googletest -BD:/compil/Markov_algorithm_compiler/googletest-build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/compil/Markov_algorithm_compiler/googletest-build/googletest-distribution.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

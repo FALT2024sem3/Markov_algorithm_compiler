@@ -8,9 +8,9 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/User/Desktop/Markov_algorithm_compiler/Parser.cpp" "CMakeFiles/Compiler.dir/Parser.cpp.obj" "gcc" "CMakeFiles/Compiler.dir/Parser.cpp.obj.d"
-  "C:/Users/User/Desktop/Markov_algorithm_compiler/Scanner.cpp" "CMakeFiles/Compiler.dir/Scanner.cpp.obj" "gcc" "CMakeFiles/Compiler.dir/Scanner.cpp.obj.d"
-  "C:/Users/User/Desktop/Markov_algorithm_compiler/main.cpp" "CMakeFiles/Compiler.dir/main.cpp.obj" "gcc" "CMakeFiles/Compiler.dir/main.cpp.obj.d"
+  "D:/compil/Markov_algorithm_compiler/main.cpp" "CMakeFiles/Compiler.dir/main.cpp.obj" "gcc" "CMakeFiles/Compiler.dir/main.cpp.obj.d"
+  "D:/compil/Markov_algorithm_compiler/syntax_tree/Parser.cpp" "CMakeFiles/Compiler.dir/syntax_tree/Parser.cpp.obj" "gcc" "CMakeFiles/Compiler.dir/syntax_tree/Parser.cpp.obj.d"
+  "D:/compil/Markov_algorithm_compiler/syntax_tree/Scanner.cpp" "CMakeFiles/Compiler.dir/syntax_tree/Scanner.cpp.obj" "gcc" "CMakeFiles/Compiler.dir/syntax_tree/Scanner.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

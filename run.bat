@@ -1,9 +1,22 @@
-.\syntax_tree\Coco.exe .\syntax_tree\Markov_algo.cpp.atg
-g++ -c .\syntax_tree\Parser.cpp -o parser.o 
-g++ -c .\syntax_tree\Scanner.cpp -o scanner.o
-g++ -c main.cpp
-g++ -o tr.exe scanner.o parser.o main.o
-.\tr.exe .\Markov.IN
+@echo off
+setlocal
 
-del .\syntax_tree\Scanner.cpp.old .\syntax_tree\Scanner.h.old .\syntax_tree\Parser.cpp.old .\syntax_tree\Parser.h.old 
-del scanner.o parser.o main.o
+rem Сборка основной программы и тестов с использованием CMake
+if not exist build mkdir build
+cd build
+cmake ..
+cmake --build .
+
+rem Копируем файл Markov.IN в каталог сборки
+if exist ..\Markov.IN (
+    copy ..\Markov.IN .
+    echo File Markov.IN copied successfully.
+) else (
+    echo Error: File Markov.IN not found.
+    exit /b 1
+)
+
+rem Запуск тестов
+ctest --rerun-failed --output-on-failure
+
+endlocal

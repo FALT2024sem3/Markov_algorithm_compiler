@@ -48,7 +48,7 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
                         std::wcout<<"GOTO: "<<(dynamic_cast<ParseTree::Goto*>(st[i]))->GetLink()<<std::endl;
                 }
                 if (st[i]->Type == ParseTree::NodeType::IfElse){      // вывод конструкции ifelse
-                        std::cout<<"IF"<<std::endl;
+                        std::wcout<<"IF"<<std::endl;
                         ParseTree::Expr* Condition = (dynamic_cast<ParseTree::IfElse*>(st[i]))->GetCond();
 
                         Condition_Tree_Traversal(Condition); // обход дерева условия
@@ -56,7 +56,7 @@ void TreeTraversal(const std::vector<ParseTree::Stat*>& st){ // обход на�
                         TreeTraversal((dynamic_cast<ParseTree::IfElse*>(st[i]))->GetIfBlock()->Getstats()); // обход блока if
                         TreeTraversal((dynamic_cast<ParseTree::IfElse*>(st[i]))->GetElseBlock()->Getstats()); // обход блока else
 
-                        std::cout<<"ENDIF"<<std::endl;
+                        std::wcout<<"ENDIF"<<std::endl;
                 }
         }
         std::wcout<<"}"<<std::endl;

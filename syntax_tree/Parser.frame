@@ -38,7 +38,6 @@ Parser.h Specification
 -->headerdef
 
 #include "Scanner.h"
-#include "MyException.h"
 #include <locale>
 #include <codecvt>
 #include <string>
@@ -314,8 +313,7 @@ void Errors::SynErr(int line, int col, int n) {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::string narrow = converter.to_bytes(s);
 	coco_string_delete(s);
-	MyException Exception(narrow, line);
-	throw (Exception);
+	throw (std::runtime_error(narrow));
 	count++;
 }
 

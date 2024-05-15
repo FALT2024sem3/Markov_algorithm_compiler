@@ -13,6 +13,7 @@
 
 
 #include "Scanner.h"
+#include "MyException.h"
 #include <locale>
 #include <codecvt>
 #include <string>

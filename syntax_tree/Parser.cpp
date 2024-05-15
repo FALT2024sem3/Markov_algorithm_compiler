@@ -400,7 +400,8 @@ void Errors::SynErr(int line, int col, int n) {
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::string narrow = converter.to_bytes(s);
 	coco_string_delete(s);
-	throw (std::runtime_error(narrow));
+	MyException Exception(narrow, line);
+	throw (Exception);
 	count++;
 }
 

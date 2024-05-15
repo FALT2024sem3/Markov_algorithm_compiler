@@ -85,7 +85,7 @@ void codeHighLighter::highlightKeywords(const QString &text)
 void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int endIndex)
 {
     int length = endIndex - startIndex;
-    std::cout << startIndex << " " << endIndex << " " << text.sliced(startIndex, length).toStdString() << '\n';
+    // std::cout << startIndex << " " << endIndex << " " << text.sliced(startIndex, length).toStdString() << '\n';
     QRegularExpressionMatchIterator i;
 //  ------------| DAFE |--------------
     i = dafe_block.globalMatch(text.sliced(startIndex, length));

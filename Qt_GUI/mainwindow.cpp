@@ -47,6 +47,8 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
 
 void MainWindow::on_buildTreeButton_clicked()
 {
+    try
+    {
     createTempFile("./temp.temp");
     ParseTree::AST* ast = build_AST("./temp.temp");
     deleteTempFile("./temp.temp");
@@ -55,6 +57,15 @@ void MainWindow::on_buildTreeButton_clicked()
     get_AST(ast->GetRoot()->Getstats(), model->invisibleRootItem());
 
     build_tree(model);
+    }
+    catch (MyException e)
+    {
+        ParseTree::AST* ast = new ParseTree::AST;
+        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "In line:" << e.GetLineNumber() << std::endl;
+        ui->ASTtreeWidget->clear();
+
+    }
 }
 
 

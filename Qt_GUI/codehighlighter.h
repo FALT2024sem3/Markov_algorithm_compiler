@@ -67,7 +67,8 @@ private:
 
     void highlightKeywords(const QString &text);
     void highlightKeywords(const QString &text, int startIndex, int endIndex);
-
+public:
+    const HighLightingRule *get_rule(States state);
 };
 
 #endif // CODEHIGHLIGHTER_H

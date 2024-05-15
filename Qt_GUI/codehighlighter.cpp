@@ -116,3 +116,14 @@ void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int
     }
 
 }
+
+const codeHighLighter::HighLightingRule *codeHighLighter::get_rule(States state)
+{
+    for (const HighLightingRule *i_rule : all_rules)
+    {
+        if (i_rule->state == state) {
+            return i_rule;
+        }
+    }
+    return &none_rule;
+}

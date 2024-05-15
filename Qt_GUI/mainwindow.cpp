@@ -15,11 +15,24 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     m_codehighlighter = new codeHighLighter(ui->codeTextEdit->document());
+    loadSettings();
 }
+
 
 MainWindow::~MainWindow()
 {
+    saveSettings();
     delete ui;
+}
+
+void MainWindow::loadSettings()
+{
+
+}
+
+void MainWindow::saveSettings()
+{
+
 }
 
 void MainWindow::build_tree(QStandardItemModel *table_tree)

@@ -4,6 +4,7 @@
 #include <QStandardItemModel>
 #include <QMainWindow>
 #include <QTreeWidgetItem>
+#include <QSettings>
 #include "codehighlighter.h"
 
 QT_BEGIN_NAMESPACE
@@ -20,6 +21,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void loadSettings();
+    void saveSettings();
+
 private slots:
     void loadCode(const QString &filePath);
 
@@ -29,6 +33,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     codeHighLighter *m_codehighlighter;
+    QSettings *settings;
 
     void createTempFile(const QString filePath);
     void deleteTempFile(const QString filePath);

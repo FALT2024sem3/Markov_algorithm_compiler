@@ -8,31 +8,48 @@
 codeHighLighter::codeHighLighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
-    change_block = QRegularExpression("->");
-    changeFormat.setForeground(QBrush(QColor("#0a0000")));
-    changeFormat.setFontWeight(QFont::DemiBold);
-
-    pointer_block = QRegularExpression("[a-zA-Z][a-zA-Z0-9_]+:");
-    pointerFormat.setForeground(QBrush(QColor("#e32636")));
-    pointerFormat.setFontItalic(true);
-
-    quotes_block = QRegularExpression("\"");
-    quotationFormat.setForeground(QBrush(QColor("#008500")));
-
-    if_block = QRegularExpression("if");
-    else_block = QRegularExpression("else");
-    ifelseFormat.setForeground(QBrush(QColor("#1164b4")));
-    ifelseFormat.setFontItalic(true);
-
-    goto_block = QRegularExpression("goto");
-    gotoFormat.setForeground(QBrush(QColor("#1164b4")));
-    gotoFormat.setFontItalic(true);
-
-    dafe_block = QRegularExpression("DAFE");
-    dafeFormat.setForeground(QBrush(QColor("#0a0000")));
-    dafeFormat.setFontWeight(QFont::Bold);
-
+    loadFormatsOld();
 }
+
+void codeHighLighter::loadFormatsOld()
+{
+    quote_rule.pattern = QRegularExpression("\"");
+    quote_rule.format.setForeground(QBrush(QColor("#008500")));
+    quote_rule.format.setFontWeight(QFont::Normal);
+    quote_rule.format.setFontItalic(false);
+
+
+    change_rule.pattern = QRegularExpression("->");
+    change_rule.format.setForeground(QBrush(QColor("#0a0000")));
+    change_rule.format.setFontWeight(QFont::DemiBold);
+    change_rule.format.setFontItalic(false);
+
+    pointer_rule.pattern = QRegularExpression("[a-zA-Z][a-zA-Z0-9_]+:");
+    pointer_rule.format.setForeground(QBrush(QColor("#e32636")));
+    pointer_rule.format.setFontWeight(QFont::Normal);
+    pointer_rule.format.setFontItalic(true);
+
+    if_rule.pattern = QRegularExpression("if");
+    if_rule.format.setForeground(QBrush(QColor("#1164b4")));
+    if_rule.format.setFontWeight(QFont::Normal);
+    if_rule.format.setFontItalic(true);
+
+    else_rule.pattern = QRegularExpression("else");
+    else_rule.format.setForeground(QBrush(QColor("#1164b4")));
+    else_rule.format.setFontWeight(QFont::Normal);
+    else_rule.format.setFontItalic(true);
+
+    goto_rule.pattern = QRegularExpression("goto");
+    goto_rule.format.setForeground(QBrush(QColor("#1164b4")));
+    goto_rule.format.setFontWeight(QFont::Normal);
+    goto_rule.format.setFontItalic(true);
+
+    dafe_rule.pattern = QRegularExpression("DAFE");
+    dafe_rule.format.setForeground(QBrush(QColor("#0a0000")));
+    dafe_rule.format.setFontWeight(QFont::Bold);
+    dafe_rule.format.setFontItalic(false);
+}
+
 
 void codeHighLighter::highlightBlock(const QString &text)
 {
@@ -45,7 +62,7 @@ void codeHighLighter::highlightBlock(const QString &text)
     // If there's no unclosed quotes in previous line
     if (previousBlockState() != Quote)
         // We're try to find quote in this line
-        startIndex = text.indexOf(quotes_block);
+        startIndex = text.indexOf(quote_rule.pattern);
 
     while (startIndex >= 0) {
         // Highlight text between quotes
@@ -53,7 +70,7 @@ void codeHighLighter::highlightBlock(const QString &text)
 
         QRegularExpressionMatch endMatch;
         // Searching closing quote
-        endIndex = text.indexOf(quotes_block, startIndex + 1, &endMatch);
+        endIndex = text.indexOf(quote_rule.pattern, startIndex + 1, &endMatch);
         int quotationLength;
         // If there's no closing quote
         if (endIndex == -1) {
@@ -64,8 +81,8 @@ void codeHighLighter::highlightBlock(const QString &text)
             quotationLength = endIndex - startIndex
                             + endMatch.capturedLength();
         }
-        setFormat(startIndex, quotationLength, quotationFormat);
-        startIndex = text.indexOf(quotes_block,
+        setFormat(startIndex, quotationLength, quote_rule.format);
+        startIndex = text.indexOf(quote_rule.pattern,
                                   startIndex + quotationLength);
     }
 
@@ -85,42 +102,17 @@ void codeHighLighter::highlightKeywords(const QString &text)
 void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int endIndex)
 {
     int length = endIndex - startIndex;
-    // std::cout << startIndex << " " << endIndex << " " << text.sliced(startIndex, length).toStdString() << '\n';
+    //std::cout << startIndex << " " << endIndex << " " << text.sliced(startIndex, length).toStdString() << '\n';
     QRegularExpressionMatchIterator i;
-//  ------------| DAFE |--------------
-    i = dafe_block.globalMatch(text.sliced(startIndex, length));
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        setFormat(startIndex + match.capturedStart(), match.capturedLength(), dafeFormat);
+
+    for (const HighLightingRule *i_rule : basic_rules)
+    {
+        QRegularExpressionMatchIterator i = i_rule->pattern.globalMatch(text.sliced(startIndex, length));
+        while (i.hasNext()) {
+            QRegularExpressionMatch match = i.next();
+            std::cout << startIndex + match.capturedStart() << ' ' << match.capturedLength() << '\n';
+            setFormat(startIndex + match.capturedStart(), match.capturedLength(), i_rule->format);
+        }
     }
-//  ------------| IF |--------------
-    i = if_block.globalMatch(text.sliced(startIndex, length));
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        setFormat(startIndex + match.capturedStart(), match.capturedLength(), ifelseFormat);
-    }
-//  ------------| ELSE |--------------
-    i = else_block.globalMatch(text.sliced(startIndex, length));
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        setFormat(startIndex + match.capturedStart(), match.capturedLength(), ifelseFormat);
-    }
-//  ------------| GOTO |--------------
-    i = goto_block.globalMatch(text.sliced(startIndex, length));
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        setFormat(startIndex + match.capturedStart(), match.capturedLength(), gotoFormat);
-    }
-//  ------------| POINTER |--------------
-    i = pointer_block.globalMatch(text.sliced(startIndex, length));
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        setFormat(startIndex + match.capturedStart(), match.capturedLength(), pointerFormat);
-    }
-// ------------| CHANGE |--------------
-    i = change_block.globalMatch(text.sliced(startIndex, length));
-    while (i.hasNext()) {
-        QRegularExpressionMatch match = i.next();
-        setFormat(startIndex + match.capturedStart(), match.capturedLength(), changeFormat);
-    }
+
 }

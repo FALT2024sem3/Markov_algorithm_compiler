@@ -74,14 +74,14 @@ public:
 	void Term(Includes::PtrBinExpr& b);
 	void Condition(Includes::PtrExpr& Cond);
 	void Link(ParseTree::Link& link);
-	void Goto(ParseTree::Goto& Gt);
+	void Goto(ParseTree::Goto& Gt, int& line);
 	void expression(Includes::PtrExpr& EXPR);
 	void TermOfIf(Includes::PtrExpr& TR);
 	void Secondary_expression(Includes::PtrExpr& SE);
 	void Primary_expression(Includes::PtrExpr& PE);
 	void Unury(Includes::PtrExpr& SE);
 	void Word(std::wstring &str);
-	void Ident(std::wstring &str);
+	void Ident(std::wstring &str, int &line);
 	void GOTO();
 	void SubOp();
 

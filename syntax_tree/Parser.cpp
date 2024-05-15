@@ -88,6 +88,7 @@ void Parser::Stat(Includes::PtrStat& s, ParseTree::Block& B) {
 		Includes::PtrExpr ConditionIf;
 		ParseTree::Link link;
 		ParseTree::Goto Gt;
+		int line;
 		
 		if (la->kind == 4 /* "{" */) {
 			Block(*bl);
@@ -115,8 +116,8 @@ void Parser::Stat(Includes::PtrStat& s, ParseTree::Block& B) {
 			(*(Parser::GetASTRoot())).SetNewLink(link.GetName());
 			
 		} else if (la->kind == 15 /* "goto" */) {
-			Goto(Gt);
-			(*(Parser::GetASTRoot())).SetNewGoto(Gt.GetLink());
+			Goto(Gt, line);
+			(*(Parser::GetASTRoot())).SetNewGoto(std::make_pair(Gt.GetLink(), line));
 			ss = std::make_shared<ParseTree::Goto>(Gt);
 			
 		} else SynErr(18);
@@ -140,16 +141,16 @@ void Parser::Condition(Includes::PtrExpr& Cond) {
 }
 
 void Parser::Link(ParseTree::Link& link) {
-		std::wstring s; 
-		Ident(s);
+		std::wstring s; int line;
+		Ident(s, line);
 		Expect(13 /* ":" */);
 		link.SetName(s); 
 }
 
-void Parser::Goto(ParseTree::Goto& Gt) {
+void Parser::Goto(ParseTree::Goto& Gt, int& line) {
 		std::wstring s; 
 		GOTO();
-		Ident(s);
+		Ident(s, line);
 		Expect(14 /* ";" */);
 		Gt.SetLink(s); 
 }
@@ -213,9 +214,9 @@ void Parser::Word(std::wstring &str) {
 		str=t->val; 
 }
 
-void Parser::Ident(std::wstring &str) {
+void Parser::Ident(std::wstring &str, int &line) {
 		Expect(_ident);
-		str=t->val; 
+		str=t->val; line=t->line;
 }
 
 void Parser::GOTO() {

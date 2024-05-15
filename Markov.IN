@@ -15,5 +15,5 @@ link:
     goto error;
     }
     ""->"r";
-    error:
+    er:
 }

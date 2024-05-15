@@ -4,6 +4,7 @@
 #include <QStandardItemModel>
 #include <QMainWindow>
 #include <QTreeWidgetItem>
+#include "codehighlighter.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -27,6 +28,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    codeHighLighter *m_codehighlighter;
 
     void createTempFile(const QString filePath);
     void deleteTempFile(const QString filePath);

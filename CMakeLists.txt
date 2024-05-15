@@ -34,6 +34,9 @@ set(SOURCES
     Qt_GUI/mainwindow.cpp
     Qt_GUI/mainwindow.h
     Qt_GUI/mainwindow.ui
+
+    Qt_GUI/codehighlighter.h
+    Qt_GUI/codehighlighter.cpp
 )
 
 add_executable(MarkovCompiler ${SOURCES})

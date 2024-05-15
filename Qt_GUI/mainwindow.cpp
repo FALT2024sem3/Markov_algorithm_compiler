@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    m_codehighlighter = new codeHighLighter(ui->codeTextEdit->document());
 }
 
 MainWindow::~MainWindow()

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 #include "AST.h"
+#include "Includes.h"
+
 
 COMPILER Root
 
@@ -31,96 +33,90 @@ PRODUCTIONS
   
   Root                                               = "DAFE" Block<*((*(Parser::GetASTRoot())).GetRoot())> .
 
-  Block <ParseTree::Block& B>                        = (. ParseTree::Stat* s; .) "{" {Stat<s, B>} "}".
+  Block <ParseTree::Block& B>                        = (. Includes::PtrStat s; .) "{" {Stat<s, B>} "}".
 
 
-  Stat <ParseTree::Stat*& s, ParseTree::Block& B>    = (. ParseTree::Stat* ss; 
-                                                          ParseTree::BinExpr* b; 
-                                                          std::vector<ParseTree::Expr*> se;
-                                                          ParseTree::Block* bl = new ParseTree::Block();
-                                                          ParseTree::Block* bl2 = new ParseTree::Block(); 
-                                                          ParseTree::Expr* ConditionIf;
+  Stat <Includes::PtrStat& s, ParseTree::Block& B>    = (. Includes::PtrStat ss; 
+                                                          Includes::PtrBinExpr b; 
+                                                          std::vector<Includes::PtrExpr> se;
+                                                          Includes::PtrBlock bl = std::make_shared<ParseTree::Block>();
+                                                          Includes::PtrBlock bl2 = std::make_shared<ParseTree::Block>(); 
+                                                          Includes::PtrExpr ConditionIf;
                                                           ParseTree::Link link;
                                                           ParseTree::Goto Gt;
+                                                          int line;
                                                           .) 
-                                ( Block<*bl>  (. ss = dynamic_cast<ParseTree::Stat*>(bl);
+                                ( Block<*bl>  (. ss = (bl);
                                                  .) 
                                 | Term<b> (. 
-                                  ss = dynamic_cast<ParseTree::Stat*>(b);
+                                  ss = (b);
                                   .)
                                 | "if" "(" Condition<ConditionIf> ")" Block<*bl> ["else" Block<*bl2>](.
-                                 ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(ConditionIf, bl, bl2)); 
+                                 ss = std::make_shared<ParseTree::IfElse>(ConditionIf, bl, bl2); 
                                  .)                           
                                 | Link<link>(.
-                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link));
+                                  ss = std::make_shared<ParseTree::Link>(link);
                                   (*(Parser::GetASTRoot())).SetNewLink(link.GetName());
                                   .)                           
-                                | Goto<Gt>(.
-                                  // auto it = (*(Parser::GetASTRoot())).GetTableOfLink().find(Gt.GetLink());
-                                  // if (it == (*(Parser::GetASTRoot())).GetTableOfLink().end()) {
-                                  //       std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-                                  //       std::string narrow = converter.to_bytes(Gt.GetLink());
-                                  //       std::string str = "Unknown link " + narrow;
-                                  //     	throw (std::runtime_error(str));
-                                  // }
-                                  (*(Parser::GetASTRoot())).SetNewGoto(Gt.GetLink());
-                                  ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt));
+                                | Goto<Gt, line>(.
+                                  (*(Parser::GetASTRoot())).SetNewGoto(std::make_pair(Gt.GetLink(), line));
+                                  ss = std::make_shared<ParseTree::Goto>(Gt);
                                   .)                           
                                 ) (.
                                   B.add(ss);
                                   .).
 
 // Обработка условия If и построение дерева условия
-Condition<ParseTree::Expr*& Cond> =   expression<Cond>.
+Condition<Includes::PtrExpr& Cond> =   expression<Cond>.
 
-expression<ParseTree::Expr*& EXPR> = 
-                                      (. ParseTree::Expr* s1; .) TermOfIf<s1> {
-                                      (. ParseTree::Expr* s2; .) "and" TermOfIf<s2>
-                                      (. s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::AND, s2));.)
+expression<Includes::PtrExpr& EXPR> = 
+                                      (. Includes::PtrExpr s1; .) TermOfIf<s1> {
+                                      (. Includes::PtrExpr s2; .) "and" TermOfIf<s2>
+                                      (. s1 = std::make_shared<ParseTree::BinLogOp>(s1, ParseTree::TypeOfLogicOp::AND, s2);.)
                                       } (. EXPR = s1; .) .
                                 
 
-TermOfIf<ParseTree::Expr*& TR> =
-                                      (. ParseTree::Expr* s1; .) Secondary_expression<s1> {
-                                      (. ParseTree::Expr* s2; .) "or" Secondary_expression<s2>
-                                      (. s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::OR, s2)); .)
+TermOfIf<Includes::PtrExpr& TR> =
+                                      (. Includes::PtrExpr s1; .) Secondary_expression<s1> {
+                                      (. Includes::PtrExpr s2; .) "or" Secondary_expression<s2>
+                                      (. s1 = std::make_shared<ParseTree::BinLogOp>(s1, ParseTree::TypeOfLogicOp::OR, s2); .)
                                       } (. TR = s1;  .) .
 
-Secondary_expression<ParseTree::Expr*& SE> = 
-                                      (. ParseTree::Expr* s; .) 
-                                      ("!" Primary_expression<s> (. s = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglLogOp(s, ParseTree::TypeOfLogicOp::NOT)); .)
+Secondary_expression<Includes::PtrExpr& SE> = 
+                                      (. Includes::PtrExpr s; .) 
+                                      ("!" Primary_expression<s> (. s = std::make_shared<ParseTree::SinglLogOp>(s, ParseTree::TypeOfLogicOp::NOT); .)
                                       | Primary_expression<s>) (. SE = s; .) .
 
 
-Primary_expression<ParseTree::Expr*& PE> = 
-                                      (. ParseTree::Expr* s; .) ('(' expression<s> ')'
+Primary_expression<Includes::PtrExpr& PE> = 
+                                      (. Includes::PtrExpr s; .) ('(' expression<s> ')'
                                       | Unury<s>) (. PE = s; .) .
 
-Unury<ParseTree::Expr*& SE> =         (.std::wstring str;.) Word<str> (. SE = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(str)); .).
+Unury<Includes::PtrExpr& SE> =         (.std::wstring str;.) Word<str> (. SE = std::make_shared<ParseTree::SinglExpr>(str); .).
 // конец обработки If
 
 // метки для прыжков
-Link<ParseTree::Link& link>  = (. std::wstring s; .) 
-                                  Ident<s> ":" (. link.SetName(s); .).
+Link<ParseTree::Link& link>  = (. std::wstring s; int line;.) 
+                                  Ident<s, line> ":" (. link.SetName(s); .).
 
 // прыжки goto
-Goto<ParseTree::Goto& Gt>  =  (. std::wstring s; .) 
-                                    GOTO Ident<s> ";" (. Gt.SetLink(s); .).
+Goto<ParseTree::Goto& Gt, int& line>  =  (. std::wstring s; .) 
+                                    GOTO Ident<s, line> ";" (. Gt.SetLink(s); .).
 
 // замены
-Term <ParseTree::BinExpr*& b> = (. 
+Term <Includes::PtrBinExpr& b> = (. 
                                    std::wstring s1, s2;
                                  .)
                                   Word<s1> SubOp Word<s2> ";"
                                   (.
-                                  b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
+                                  b = std::make_shared<ParseTree::BinExpr>(s1, ParseTree::Operator::SUB , s2); 
                                   .).
 
 GOTO  = "goto".
 SubOp = "->".
 
 // идентификатор
-Ident<std::wstring &str>     = ident (. str=t->val; .).
+Ident<std::wstring &str, int &line>     = ident (. str=t->val; line=t->line;.).
 
 // слово 
 Word<std::wstring &str>      = string (. str=t->val; .).

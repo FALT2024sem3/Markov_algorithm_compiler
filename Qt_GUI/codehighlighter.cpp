@@ -75,37 +75,38 @@ void codeHighLighter::highlightKeywords(const QString &text)
 
 void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int endIndex)
 {
-    // std::cout << startIndex << " " << endIndex << " " << text.mid(startIndex, endIndex).toStdString() << '\n';
+    int length = endIndex - startIndex;
+    std::cout << startIndex << " " << endIndex << " " << text.sliced(startIndex, length).toStdString() << '\n';
     QRegularExpressionMatchIterator i;
 //  ------------| DAFE |--------------
-    i = dafe_block.globalMatch(text.mid(startIndex, endIndex));
+    i = dafe_block.globalMatch(text.sliced(startIndex, length));
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
-        setFormat(match.capturedStart(), match.capturedLength(), dafeFormat);
+        setFormat(startIndex + match.capturedStart(), match.capturedLength(), dafeFormat);
     }
 //  ------------| IF |--------------
-    i = if_block.globalMatch(text.mid(startIndex, endIndex));
+    i = if_block.globalMatch(text.sliced(startIndex, length));
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
-        setFormat(match.capturedStart(), match.capturedLength(), ifelseFormat);
+        setFormat(startIndex + match.capturedStart(), match.capturedLength(), ifelseFormat);
     }
 //  ------------| ELSE |--------------
-    i = else_block.globalMatch(text.mid(startIndex, endIndex));
+    i = else_block.globalMatch(text.sliced(startIndex, length));
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
-        setFormat(match.capturedStart(), match.capturedLength(), ifelseFormat);
+        setFormat(startIndex + match.capturedStart(), match.capturedLength(), ifelseFormat);
     }
 //  ------------| GOTO |--------------
-    i = goto_block.globalMatch(text.mid(startIndex, endIndex));
+    i = goto_block.globalMatch(text.sliced(startIndex, length));
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
-        setFormat(match.capturedStart(), match.capturedLength(), gotoFormat);
+        setFormat(startIndex + match.capturedStart(), match.capturedLength(), gotoFormat);
     }
 //  ------------| POINTER |--------------
-    i = pointer_block.globalMatch(text.mid(startIndex, endIndex));
+    i = pointer_block.globalMatch(text.sliced(startIndex, length));
     while (i.hasNext()) {
         QRegularExpressionMatch match = i.next();
-        setFormat(match.capturedStart(), match.capturedLength(), pointerFormat);
+        setFormat(startIndex + match.capturedStart(), match.capturedLength(), pointerFormat);
     }
 
 }

@@ -16,20 +16,24 @@ class codeHighLighter : public QSyntaxHighlighter
 public:
     explicit codeHighLighter(QTextDocument * parent = 0);
 
-    void loadFormatsOld();
-protected:
-    void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
-private:
     enum States {
         None,       // No highlighting
-        Pointer,    // Pointer name highlightting
+        Quote,      // Pointer name highlightting
         Change,     // Arrow between lines
-        Quote,      // Text inside "" and " itself
+        Pointer,    // Text inside "" and " itself
         If,
-        Else,     // If and Else commands
+        Else,       // If and Else commands
         GoTo,       // Goto command
         DAFE        // DAFE in the bigining
     };
+
+    void loadFormatsOld();
+
+    void loadFormats();
+
+protected:
+    void highlightBlock(const QString &text) Q_DECL_OVERRIDE;
+private:
 
     struct HighLightingRule
     {
@@ -58,17 +62,17 @@ private:
     HighLightingRule goto_rule = {GoTo};
     HighLightingRule dafe_rule = {DAFE};
 
-    QVector<const HighLightingRule*> all_rules =
+    QVector<HighLightingRule*> all_rules =
         {&none_rule, &quote_rule, &change_rule, &pointer_rule,
         &if_rule, &else_rule, &goto_rule, &dafe_rule};
-    QVector<const HighLightingRule*> basic_rules =
+    QVector<HighLightingRule*> basic_rules =
         {&change_rule, &pointer_rule, &if_rule,
         &else_rule, &goto_rule, &dafe_rule};
 
     void highlightKeywords(const QString &text);
     void highlightKeywords(const QString &text, int startIndex, int endIndex);
 public:
-    const HighLightingRule *get_rule(States state);
+    HighLightingRule* get_rule(States state);
 };
 
 #endif // CODEHIGHLIGHTER_H

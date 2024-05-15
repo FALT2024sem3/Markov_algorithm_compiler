@@ -13,8 +13,8 @@ build/
 CMakeLists.txt.user
 
 # Coco/R
-syntax_tree/Parser.h
-syntax_tree/Parser.cpp
-syntax_tree/Scanner.h
-syntax_tree/Scanner.cpp
+dev/syntax_tree/Parser.h
+dev/syntax_tree/Parser.cpp
+dev/syntax_tree/Scanner.h
+dev/syntax_tree/Scanner.cpp
 *.old

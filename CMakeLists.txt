@@ -39,7 +39,8 @@ set(SOURCES
     Qt_GUI/codehighlighter.cpp
 )
 
-add_executable(MarkovCompiler ${SOURCES})
+add_executable(MarkovCompiler ${SOURCES}
+    syntax_tree/Includes.h syntax_tree/MyException.h)
 
 target_link_libraries(MarkovCompiler Qt6::Core)
 target_link_libraries(MarkovCompiler Qt6::Widgets)

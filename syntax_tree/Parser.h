@@ -9,6 +9,7 @@
 #include <fstream>
 #include <vector>
 #include "AST.h"
+#include "Includes.h"
 
 
 #include "Scanner.h"
@@ -68,18 +69,18 @@ public:
 
 	void Root();
 	void Block(ParseTree::Block& B);
-	void Stat(ParseTree::Stat*& s, ParseTree::Block& B);
-	void Term(ParseTree::BinExpr*& b);
-	void Condition(ParseTree::Expr*& Cond);
+	void Stat(Includes::PtrStat& s, ParseTree::Block& B);
+	void Term(Includes::PtrBinExpr& b);
+	void Condition(Includes::PtrExpr& Cond);
 	void Link(ParseTree::Link& link);
-	void Goto(ParseTree::Goto& Gt);
-	void expression(ParseTree::Expr*& EXPR);
-	void TermOfIf(ParseTree::Expr*& TR);
-	void Secondary_expression(ParseTree::Expr*& SE);
-	void Primary_expression(ParseTree::Expr*& PE);
-	void Unury(ParseTree::Expr*& SE);
+	void Goto(ParseTree::Goto& Gt, int& line);
+	void expression(Includes::PtrExpr& EXPR);
+	void TermOfIf(Includes::PtrExpr& TR);
+	void Secondary_expression(Includes::PtrExpr& SE);
+	void Primary_expression(Includes::PtrExpr& PE);
+	void Unury(Includes::PtrExpr& SE);
 	void Word(std::wstring &str);
-	void Ident(std::wstring &str);
+	void Ident(std::wstring &str, int &line);
 	void GOTO();
 	void SubOp();
 

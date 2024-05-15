@@ -71,7 +71,7 @@ void Parser::Root() {
 }
 
 void Parser::Block(ParseTree::Block& B) {
-		ParseTree::Stat* s; 
+		Includes::PtrStat s; 
 		Expect(4 /* "{" */);
 		while (StartOf(1)) {
 			Stat(s, B);
@@ -79,23 +79,24 @@ void Parser::Block(ParseTree::Block& B) {
 		Expect(5 /* "}" */);
 }
 
-void Parser::Stat(ParseTree::Stat*& s, ParseTree::Block& B) {
-		ParseTree::Stat* ss; 
-		ParseTree::BinExpr* b; 
-		std::vector<ParseTree::Expr*> se;
-		ParseTree::Block* bl = new ParseTree::Block();
-		ParseTree::Block* bl2 = new ParseTree::Block(); 
-		ParseTree::Expr* ConditionIf;
+void Parser::Stat(Includes::PtrStat& s, ParseTree::Block& B) {
+		Includes::PtrStat ss; 
+		Includes::PtrBinExpr b; 
+		std::vector<Includes::PtrExpr> se;
+		Includes::PtrBlock bl = std::make_shared<ParseTree::Block>();
+		Includes::PtrBlock bl2 = std::make_shared<ParseTree::Block>(); 
+		Includes::PtrExpr ConditionIf;
 		ParseTree::Link link;
 		ParseTree::Goto Gt;
+		int line;
 		
 		if (la->kind == 4 /* "{" */) {
 			Block(*bl);
-			ss = dynamic_cast<ParseTree::Stat*>(bl);
+			ss = (bl);
 			
 		} else if (la->kind == _string) {
 			Term(b);
-			ss = dynamic_cast<ParseTree::Stat*>(b);
+			ss = (b);
 			
 		} else if (la->kind == 6 /* "if" */) {
 			Get();
@@ -107,91 +108,91 @@ void Parser::Stat(ParseTree::Stat*& s, ParseTree::Block& B) {
 				Get();
 				Block(*bl2);
 			}
-			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::IfElse(ConditionIf, bl, bl2)); 
+			ss = std::make_shared<ParseTree::IfElse>(ConditionIf, bl, bl2); 
 			
 		} else if (la->kind == _ident) {
 			Link(link);
-			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Link(link));
+			ss = std::make_shared<ParseTree::Link>(link);
 			(*(Parser::GetASTRoot())).SetNewLink(link.GetName());
 			
 		} else if (la->kind == 15 /* "goto" */) {
-			Goto(Gt);
-			(*(Parser::GetASTRoot())).SetNewGoto(Gt.GetLink());
-			ss = dynamic_cast<ParseTree::Stat*>(new ParseTree::Goto(Gt));
+			Goto(Gt, line);
+			(*(Parser::GetASTRoot())).SetNewGoto(std::make_pair(Gt.GetLink(), line));
+			ss = std::make_shared<ParseTree::Goto>(Gt);
 			
 		} else SynErr(18);
 		B.add(ss);
 		
 }
 
-void Parser::Term(ParseTree::BinExpr*& b) {
+void Parser::Term(Includes::PtrBinExpr& b) {
 		std::wstring s1, s2;
 		
 		Word(s1);
 		SubOp();
 		Word(s2);
 		Expect(14 /* ";" */);
-		b = new ParseTree::BinExpr(s1, ParseTree::Operator::SUB , s2); 
+		b = std::make_shared<ParseTree::BinExpr>(s1, ParseTree::Operator::SUB , s2); 
 		
 }
 
-void Parser::Condition(ParseTree::Expr*& Cond) {
+void Parser::Condition(Includes::PtrExpr& Cond) {
 		expression(Cond);
 }
 
 void Parser::Link(ParseTree::Link& link) {
-		std::wstring s; 
-		Ident(s);
+		std::wstring s; int line;
+		Ident(s, line);
 		Expect(13 /* ":" */);
 		link.SetName(s); 
 }
 
-void Parser::Goto(ParseTree::Goto& Gt) {
+void Parser::Goto(ParseTree::Goto& Gt, int& line) {
 		std::wstring s; 
 		GOTO();
-		Ident(s);
+		Ident(s, line);
 		Expect(14 /* ";" */);
 		Gt.SetLink(s); 
 }
 
-void Parser::expression(ParseTree::Expr*& EXPR) {
-		ParseTree::Expr* s1; 
+void Parser::expression(Includes::PtrExpr& EXPR) {
+		Includes::PtrExpr s1; 
 		TermOfIf(s1);
 		while (la->kind == 10 /* "and" */) {
-			ParseTree::Expr* s2; 
+			Includes::PtrExpr s2; 
 			Get();
 			TermOfIf(s2);
-			s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::AND, s2));
+			s1 = std::make_shared<ParseTree::BinLogOp>(s1, ParseTree::TypeOfLogicOp::AND, s2);
 		}
 		EXPR = s1; 
 }
 
-void Parser::TermOfIf(ParseTree::Expr*& TR) {
-		ParseTree::Expr* s1; 
+void Parser::TermOfIf(Includes::PtrExpr& TR) {
+		Includes::PtrExpr s1; 
 		Secondary_expression(s1);
 		while (la->kind == 11 /* "or" */) {
-			ParseTree::Expr* s2; 
+			Includes::PtrExpr s2; 
 			Get();
 			Secondary_expression(s2);
-			s1 = dynamic_cast<ParseTree::Expr*>(new ParseTree::BinLogOp(s1, ParseTree::TypeOfLogicOp::OR, s2)); 
+			s1 = std::make_shared<ParseTree::BinLogOp>(s1, ParseTree::TypeOfLogicOp::OR, s2); 
 		}
 		TR = s1;  
 }
 
-void Parser::Secondary_expression(ParseTree::Expr*& SE) {
-		ParseTree::Expr* s; 
+void Parser::Secondary_expression(Includes::PtrExpr& SE) {
+		Includes::PtrExpr s; 
 		if (la->kind == 12 /* "!" */) {
 			Get();
 			Primary_expression(s);
-			s = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglLogOp(s, ParseTree::TypeOfLogicOp::NOT)); 
+			s = std::make_shared<ParseTree::SinglLogOp>(s, ParseTree::TypeOfLogicOp::NOT); 
 		} else if (la->kind == _string || la->kind == 7 /* "(" */) {
 			Primary_expression(s);
 		} else SynErr(19);
 		SE = s; 
 }
 
-void Parser::Primary_expression(ParseTree::Expr*& PE) {
-		ParseTree::Expr* s; 
+void Parser::Primary_expression(Includes::PtrExpr& PE) {
+		Includes::PtrExpr s; 
 		if (la->kind == 7 /* "(" */) {
 			Get();
 			expression(s);
@@ -202,10 +203,10 @@ void Parser::Primary_expression(ParseTree::Expr*& PE) {
 		PE = s; 
 }
 
-void Parser::Unury(ParseTree::Expr*& SE) {
+void Parser::Unury(Includes::PtrExpr& SE) {
 		std::wstring str;
 		Word(str);
-		SE = dynamic_cast<ParseTree::Expr*>(new ParseTree::SinglExpr(str)); 
+		SE = std::make_shared<ParseTree::SinglExpr>(str); 
 }
 
 void Parser::Word(std::wstring &str) {
@@ -213,9 +214,9 @@ void Parser::Word(std::wstring &str) {
 		str=t->val; 
 }
 
-void Parser::Ident(std::wstring &str) {
+void Parser::Ident(std::wstring &str, int &line) {
 		Expect(_ident);
-		str=t->val; 
+		str=t->val; line=t->line;
 }
 
 void Parser::GOTO() {

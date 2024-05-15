@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "./get_AST.h"
-#include "./build_AST.h"
+#include "get_AST.h"
+#include "build_AST.h"
 #include "AST.h"
 #include "qdir.h"
 

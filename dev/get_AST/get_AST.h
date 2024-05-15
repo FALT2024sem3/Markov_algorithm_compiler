@@ -2,10 +2,7 @@
 #define GET_AST_H
 
 #include <QStandardItemModel>
-#include <QApplication>
-#include <QList>
 #include <algorithm>
-#include <iostream>
 #include <memory>
 #include <vector>
 #include "AST.h"

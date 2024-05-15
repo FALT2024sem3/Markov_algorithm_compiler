@@ -3,12 +3,18 @@
 #include <QBrush>
 #include <QColor>
 #include <iostream>
+#include <QFont>
 
 codeHighLighter::codeHighLighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
+    change_block = QRegularExpression("->");
+    changeFormat.setForeground(QBrush(QColor("#0a0000")));
+    changeFormat.setFontWeight(QFont::DemiBold);
+
     pointer_block = QRegularExpression("[a-zA-Z][a-zA-Z0-9_]+:");
     pointerFormat.setForeground(QBrush(QColor("#e32636")));
+    pointerFormat.setFontItalic(true);
 
     quotes_block = QRegularExpression("\"");
     quotationFormat.setForeground(QBrush(QColor("#008500")));
@@ -16,12 +22,15 @@ codeHighLighter::codeHighLighter(QTextDocument *parent)
     if_block = QRegularExpression("if");
     else_block = QRegularExpression("else");
     ifelseFormat.setForeground(QBrush(QColor("#1164b4")));
+    ifelseFormat.setFontItalic(true);
 
     goto_block = QRegularExpression("goto");
     gotoFormat.setForeground(QBrush(QColor("#1164b4")));
+    gotoFormat.setFontItalic(true);
 
     dafe_block = QRegularExpression("DAFE");
     dafeFormat.setForeground(QBrush(QColor("#0a0000")));
+    dafeFormat.setFontWeight(QFont::Bold);
 
 }
 
@@ -108,5 +117,10 @@ void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int
         QRegularExpressionMatch match = i.next();
         setFormat(startIndex + match.capturedStart(), match.capturedLength(), pointerFormat);
     }
-
+// ------------| CHANGE |--------------
+    i = change_block.globalMatch(text.sliced(startIndex, length));
+    while (i.hasNext()) {
+        QRegularExpressionMatch match = i.next();
+        setFormat(startIndex + match.capturedStart(), match.capturedLength(), changeFormat);
+    }
 }

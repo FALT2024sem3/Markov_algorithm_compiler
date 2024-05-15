@@ -20,6 +20,7 @@ private:
     enum States {
         None,       // No highlighting
         Pointer,    // Pointer name highlightting
+        Change,     // Arrow between lines
         Quote,      // Text inside "" and " itself
         IfElse,     // If and Else commands
         GoTo,       // Goto command
@@ -31,6 +32,9 @@ private:
         QRegularExpression pattern;
         QTextCharFormat format;
     };
+
+    QRegularExpression change_block;   // Sybol for main codeline - "->"
+    QTextCharFormat changeFormat;      // Format for change
 
     QRegularExpression pointer_block;   // Ending sybol for links - ":"
     QTextCharFormat pointerFormat;      // Format for links

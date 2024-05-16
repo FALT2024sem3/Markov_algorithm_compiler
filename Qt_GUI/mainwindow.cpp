@@ -173,7 +173,6 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
     {
         QTreeWidgetItem *child = new QTreeWidgetItem;
         child->setText(0, table_item->child(i)->text());
-        child->setForeground(0, table_item->child(i)->foreground());
         tree_add_children(table_item->child(i), child);
         tree_item->addChild(child);
 

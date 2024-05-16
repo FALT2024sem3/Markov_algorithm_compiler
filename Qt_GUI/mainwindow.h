@@ -40,7 +40,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     codeHighLighter *m_codehighlighter;
-    QSettings *settings;
+    QSettings settings;
 
     void createTempFile(const QString filePath);
     void deleteTempFile(const QString filePath);

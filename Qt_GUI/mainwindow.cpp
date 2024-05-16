@@ -85,7 +85,7 @@ void MainWindow::loadSettings()
     rule->style.is_italic = settings.value("is_italic", true).toBool();
     settings.endGroup();
     // DAFE
-    rule = m_codehighlighter->get_rule(codeHighLighter::GoTo);
+    rule = m_codehighlighter->get_rule(codeHighLighter::DAFE);
     settings.beginGroup("dafe_block");
     rule->style.reg_expr = settings.value("reg_expr", "DAFE").toString();
     rule->style.color = settings.value("color", "#0a0000").toString();

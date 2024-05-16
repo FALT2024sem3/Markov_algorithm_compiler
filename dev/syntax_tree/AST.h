@@ -2,11 +2,15 @@
 #define AST_H
 
 #include <string>
+#include <sstream>
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <locale>
 #include <codecvt>
 #include <unordered_map>
 #include <memory>
+#include "MyException.h"
 
 namespace ParseTree
 {
@@ -208,20 +212,21 @@ namespace ParseTree
     {                                                      // класс для работы с нашим AST деревом, хранит самый верхний уровень вложенности
         std::shared_ptr<ParseTree::Block> Root;            // корень дерева
         std::unordered_map<std::wstring, int> TableOfLink; // метки
-        std::vector<std::wstring> TableOfGoto;             // переходы к меткам
+        std::vector<std::pair<std::wstring, int>> TableOfGoto;            // переходы к меткам
         void CheckOfLinks()
         { // проеверяем соответствие меток и переходов(goto)
             for (size_t i = 0; i < TableOfGoto.size(); i++)
             {
-                auto it = TableOfLink.find(TableOfGoto[i]);
+                auto it = TableOfLink.find(TableOfGoto[i].first);
                 if (it == TableOfLink.end())
                 { // нашли несоответствие, кидаем ошибку
                     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-                    std::string narrow = converter.to_bytes(TableOfGoto[i]);
+                    std::string narrow = converter.to_bytes(TableOfGoto[i].first);
 
                     std::string str = "Unknown link " + narrow;
+                    MyException Exception(str, TableOfGoto[i].second);
 
-                    throw(std::runtime_error(str));
+                    throw(Exception);
                 }
             }
         }
@@ -240,9 +245,9 @@ namespace ParseTree
         {
             TableOfLink[str] = 0;
         }
-        void SetNewGoto(const std::wstring &str) // Установить новый прыжок
+        void SetNewGoto(std::pair<std::wstring, int> NewLink) // Установить новый прыжок
         {
-            TableOfGoto.push_back(str);
+            TableOfGoto.push_back(NewLink);
         }
     };
 

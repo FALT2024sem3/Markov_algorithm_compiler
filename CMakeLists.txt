@@ -16,7 +16,8 @@ set(SOURCES
     main.cpp
 )
 
-add_executable(MarkovCompiler ${SOURCES})
+add_executable(MarkovCompiler ${SOURCES}
+    syntax_tree/Includes.h syntax_tree/MyException.h)
 
 target_link_libraries(MarkovCompiler coco_library)
 target_link_libraries(MarkovCompiler GUI_library)

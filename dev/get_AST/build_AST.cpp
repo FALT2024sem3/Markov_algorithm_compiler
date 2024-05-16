@@ -1,6 +1,7 @@
 #include "build_AST.h"
 #include "Scanner.h"
 #include "Parser.h"
+#include "MyException.h"
 
 ParseTree::AST* build_AST(std::string file_name)
 {
@@ -10,19 +11,14 @@ ParseTree::AST* build_AST(std::string file_name)
         const wchar_t* file = widestr.c_str();
         ParseTree::AST* ast = new ParseTree::AST;
 
-        Scanner *scanner = new Scanner(file);
-        Parser *parser   = new Parser(scanner, ast);
-        parser->Parse();
+    Scanner *scanner = new Scanner(file);
+    Parser *parser   = new Parser(scanner, ast);
+    parser->Parse();
 
-        delete parser;
-        delete scanner;
 
-        return ast;
-    }
-    catch (const std::runtime_error &e)
-    {
-        ParseTree::AST* ast = new ParseTree::AST;
-        std::cerr << "Error: " << e.what() << std::endl;
-        return ast;
-    }
+    delete parser;
+    delete scanner;
+
+    return ast;
+
 }

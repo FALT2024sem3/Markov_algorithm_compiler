@@ -110,7 +110,8 @@ void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int
         QRegularExpressionMatchIterator i = i_rule->pattern.globalMatch(text.sliced(startIndex, length));
         while (i.hasNext()) {
             QRegularExpressionMatch match = i.next();
-            std::cout << startIndex + match.capturedStart() << ' ' << match.capturedLength() << '\n';
+            // Отладочная информация
+            // std::cout << startIndex + match.capturedStart() << ' ' << match.capturedLength() << '\n';
             setFormat(startIndex + match.capturedStart(), match.capturedLength(), i_rule->format);
         }
     }

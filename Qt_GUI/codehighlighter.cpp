@@ -3,7 +3,7 @@
 codeHighLighter::codeHighLighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
 {
-    /********/
+    loadFormatsOld();
 }
 
 void codeHighLighter::loadFormatsOld()
@@ -43,17 +43,6 @@ void codeHighLighter::loadFormatsOld()
     dafe_rule.format.setForeground(QBrush(QColor("#0a0000")));
     dafe_rule.format.setFontWeight(QFont::Bold);
     dafe_rule.format.setFontItalic(false);
-}
-
-void codeHighLighter::loadFormats()
-{
-    for (HighLightingRule *i_rule : all_rules)
-    {
-        i_rule->pattern = QRegularExpression(i_rule->style.reg_expr);
-        i_rule->format.setForeground(QBrush(QColor(i_rule->style.color)));
-        i_rule->format.setFontWeight(i_rule->style.boldness);
-        i_rule->format.setFontItalic(i_rule->style.is_italic);
-    }
 }
 
 
@@ -112,20 +101,22 @@ void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int
     //std::cout << startIndex << " " << endIndex << " " << text.sliced(startIndex, length).toStdString() << '\n';
     QRegularExpressionMatchIterator i;
 
-    for (HighLightingRule *i_rule : basic_rules)
+    for (const HighLightingRule *i_rule : basic_rules)
     {
         QRegularExpressionMatchIterator i = i_rule->pattern.globalMatch(text.sliced(startIndex, length));
         while (i.hasNext()) {
             QRegularExpressionMatch match = i.next();
+            // Debug info
+            // std::cout << startIndex + match.capturedStart() << ' ' << match.capturedLength() << '\n';
             setFormat(startIndex + match.capturedStart(), match.capturedLength(), i_rule->format);
         }
     }
 
 }
 
-codeHighLighter::HighLightingRule* codeHighLighter::get_rule(States state)
+const codeHighLighter::HighLightingRule *codeHighLighter::get_rule(States state)
 {
-    for (HighLightingRule *i_rule : all_rules)
+    for (const HighLightingRule *i_rule : all_rules)
     {
         if (i_rule->state == state) {
             return i_rule;

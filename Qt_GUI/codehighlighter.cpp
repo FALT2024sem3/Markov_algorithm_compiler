@@ -1,9 +1,4 @@
 #include "codehighlighter.h"
-#include <QTextCharFormat>
-#include <QBrush>
-#include <QColor>
-#include <iostream>
-#include <QFont>
 
 codeHighLighter::codeHighLighter(QTextDocument *parent)
     : QSyntaxHighlighter(parent)
@@ -102,6 +97,7 @@ void codeHighLighter::highlightKeywords(const QString &text)
 void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int endIndex)
 {
     int length = endIndex - startIndex;
+    // Debug info
     //std::cout << startIndex << " " << endIndex << " " << text.sliced(startIndex, length).toStdString() << '\n';
     QRegularExpressionMatchIterator i;
 
@@ -110,7 +106,7 @@ void codeHighLighter::highlightKeywords(const QString &text, int startIndex, int
         QRegularExpressionMatchIterator i = i_rule->pattern.globalMatch(text.sliced(startIndex, length));
         while (i.hasNext()) {
             QRegularExpressionMatch match = i.next();
-            // Отладочная информация
+            // Debug info
             // std::cout << startIndex + match.capturedStart() << ' ' << match.capturedLength() << '\n';
             setFormat(startIndex + match.capturedStart(), match.capturedLength(), i_rule->format);
         }

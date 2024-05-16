@@ -4,6 +4,7 @@ project(GUI_library LANGUAGES CXX)
 
 set(SOURCES
    mainwindow.cpp
+   codehighlighter.cpp
 )
 
 find_package(Qt6 REQUIRED COMPONENTS Core)

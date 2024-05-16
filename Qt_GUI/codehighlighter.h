@@ -3,6 +3,11 @@
 
 #include <QRegularExpression>
 #include <QSyntaxHighlighter>
+#include <QTextCharFormat>
+#include <QBrush>
+#include <QColor>
+#include <iostream>
+#include <QFont>
 
 QT_BEGIN_NAMESPACE
 class QTextDocument;

@@ -1,12 +1,5 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "get_AST.h"
-#include "build_AST.h"
-#include "AST.h"
-#include "qdir.h"
-
-#include <QMessageBox>
-#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

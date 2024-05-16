@@ -5,6 +5,13 @@
 #include <QMainWindow>
 #include <QTreeWidgetItem>
 #include <QSettings>
+#include <QMessageBox>
+#include <QFileDialog>
+
+#include "get_AST.h"
+#include "build_AST.h"
+#include "AST.h"
+#include "qdir.h"
 #include "codehighlighter.h"
 
 QT_BEGIN_NAMESPACE

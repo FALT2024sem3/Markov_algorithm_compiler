@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.14)
 
 project(coco_library LANGUAGES CXX)
 
+add_subdirectory(syntax_tree)
+
 set(SOURCES
     syntax_tree/AST.h
     syntax_tree/Includes.h
@@ -17,8 +19,6 @@ find_package(Qt6 REQUIRED COMPONENTS Gui)
 add_library(${PROJECT_NAME}
     ${SOURCES}
 )
-
-add_subdirectory(syntax_tree)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     syntax_tree

@@ -33,4 +33,3 @@ set(generated_old
     Parser.h.old
 )
 file(REMOVE ${generated_old})
-file(REMOVE ${generated_old})

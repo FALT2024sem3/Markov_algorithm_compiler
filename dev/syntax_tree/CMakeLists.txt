@@ -27,9 +27,9 @@ add_custom_target(
 
 # Deleting .old files from generation
 set(generated_old
-    ${PROJECT_SOURCE_DIR}/Scanner.cpp.old
-    ${PROJECT_SOURCE_DIR}/Scanner.h.old
-    ${PROJECT_SOURCE_DIR}/Parser.cpp.old
-    ${PROJECT_SOURCE_DIR}/Parser.h.old
+    Scanner.cpp.old
+    Scanner.h.old
+    Parser.cpp.old
+    Parser.h.old
 )
 file(REMOVE ${generated_old})

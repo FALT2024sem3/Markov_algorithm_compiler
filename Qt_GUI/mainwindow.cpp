@@ -1,23 +1,31 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "./get_AST.h"
-#include "./build_AST.h"
-#include "AST.h"
-#include "qdir.h"
-
-#include <QMessageBox>
-#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    m_codehighlighter = new codeHighLighter(ui->codeTextEdit->document());
+    loadSettings();
 }
+
 
 MainWindow::~MainWindow()
 {
+    saveSettings();
     delete ui;
+}
+
+void MainWindow::loadSettings()
+{
+
+}
+
+void MainWindow::saveSettings()
+{
+
 }
 
 void MainWindow::build_tree(QStandardItemModel *table_tree)
@@ -36,6 +44,7 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
     {
         QTreeWidgetItem *child = new QTreeWidgetItem;
         child->setText(0, table_item->child(i)->text());
+        child->setForeground(0, table_item->child(i)->foreground());
         tree_add_children(table_item->child(i), child);
         tree_item->addChild(child);
 
@@ -45,8 +54,9 @@ void MainWindow::tree_add_children(QStandardItem *table_item, QTreeWidgetItem *t
 
 void MainWindow::on_buildTreeButton_clicked()
 {
+    try
+    {
     createTempFile("./temp.temp");
-    // TO_CHANGE place written code into file -------------------------------------------------------
     ParseTree::AST* ast = build_AST("./temp.temp");
     deleteTempFile("./temp.temp");
 
@@ -54,6 +64,15 @@ void MainWindow::on_buildTreeButton_clicked()
     get_AST(ast->GetRoot()->Getstats(), model->invisibleRootItem());
 
     build_tree(model);
+    }
+    catch (MyException e)
+    {
+        ParseTree::AST* ast = new ParseTree::AST;
+        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "In line:" << e.GetLineNumber() << std::endl;
+        ui->ASTtreeWidget->clear();
+
+    }
 }
 
 
